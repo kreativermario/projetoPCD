@@ -7,8 +7,8 @@ import environment.Coordinate;
 
 public class Game extends Observable {
 
-	public static final int DIMY = 30;
-	public static final int DIMX = 30;
+	public static final int DIMY = 5;
+	public static final int DIMX = 5;
 	private static final int NUM_PLAYERS = 90;
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 

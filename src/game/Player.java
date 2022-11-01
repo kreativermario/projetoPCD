@@ -32,6 +32,15 @@ public abstract class Player  {
 		originalStrength=strength;
 	}
 
+	/**
+	 * //TODO Gerar a energia
+	 * Gera a energia a inicializar do jogador
+	 */
+	private void generateStrength(){
+
+	}
+
+
 	public abstract boolean isHumanPlayer();
 	
 	@Override

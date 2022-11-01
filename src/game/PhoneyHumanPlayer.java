@@ -8,6 +8,7 @@ package game;
 public class PhoneyHumanPlayer extends Player {
 	public PhoneyHumanPlayer(int id, Game game, byte strength) {
 		super(id, game, strength);
+		System.err.println("Created Bot " + super.toString() );
 	}
 
 	public boolean isHumanPlayer() {
