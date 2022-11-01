@@ -21,7 +21,7 @@ public abstract class Player  {
 
 	// TODO: get player position from data in game
 	public Cell getCurrentCell() {
-		return null;
+		return game.getCellByPlayer(this);
 	}
 
 	public Player(int id, Game game, byte strength) {
@@ -31,15 +31,6 @@ public abstract class Player  {
 		currentStrength=strength;
 		originalStrength=strength;
 	}
-
-	/**
-	 * //TODO Gerar a energia
-	 * Gera a energia a inicializar do jogador
-	 */
-	private void generateStrength(){
-
-	}
-
 
 	public abstract boolean isHumanPlayer();
 	
