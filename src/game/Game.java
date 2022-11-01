@@ -48,6 +48,8 @@ public class Game extends Observable {
 			};
 
 			Cell initialPos=getRandomCell();
+			//TODO Talvez livrar de um duplo for so para pesquisar a celula e colocar player. Fazer um get diretamente
+			//TODO atraves da geracao de uma coordenada aleatoria e colocar la
 			for (int x = 0; x < Game.DIMX; x++) {
 				for (int y = 0; y < Game.DIMY; y++) {
 					if (board[x][y].getPosition().equals(initialPos.getPosition())) {
