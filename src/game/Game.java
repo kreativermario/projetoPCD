@@ -1,11 +1,11 @@
 package game;
 
 
-import java.util.Observable;
-import java.util.Random;
-
 import environment.Cell;
 import environment.Coordinate;
+
+import java.util.Observable;
+import java.util.Random;
 
 public class Game extends Observable {
 
@@ -47,16 +47,27 @@ public class Game extends Observable {
 				}
 			};
 
-			Cell initialPos=getRandomCell();
+			Coordinate initCoordinate = Coordinate.getRandomCoordinate();
 			//TODO Talvez livrar de um duplo for so para pesquisar a celula e colocar player. Fazer um get diretamente
 			//TODO atraves da geracao de uma coordenada aleatoria e colocar la
-			for (int x = 0; x < Game.DIMX; x++) {
+
+			//TODO se a celula ja tiver player, fazer aqui um wait e depois colocar. Precisamos de implementar movimento
+			// E o clock do jogo
+			if(board[initCoordinate.x][initCoordinate.y].isOcupied()){
+				System.err.println("Célula " + board[initCoordinate.x][initCoordinate.y].getPosition()
+				+ " já tem player");
+			}else{
+				board[initCoordinate.x][initCoordinate.y].setPlayer(player);
+			}
+
+			/*for (int x = 0; x < Game.DIMX; x++) {
 				for (int y = 0; y < Game.DIMY; y++) {
 					if (board[x][y].getPosition().equals(initialPos.getPosition())) {
 						board[x][y].setPlayer(player);
 					}
 				}
-			}
+			}*/
+
 			System.err.println("Player generated -> " + player.toString());
 			// To update GUI
 			notifyChange();

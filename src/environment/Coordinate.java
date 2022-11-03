@@ -1,5 +1,7 @@
 package environment;
 
+import game.Game;
+
 public class Coordinate {
 	public final int x;
 	public final int y;
@@ -25,6 +27,11 @@ public class Coordinate {
 		double dy = x - other.x;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
+
+	public static Coordinate getRandomCoordinate(){
+		return new Coordinate((int)(Math.random()* Game.DIMX),(int)(Math.random()*Game.DIMY));
+	}
+
 
 	public Coordinate translate(Coordinate vector) {
 		return new Coordinate(x+vector.x, y+vector.y);
