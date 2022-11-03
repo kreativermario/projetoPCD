@@ -21,7 +21,7 @@ public abstract class Player  {
 
 	// TODO: get player position from data in game
 	public Cell getCurrentCell() {
-		return null;
+		return game.getCellByPlayer(this);
 	}
 
 	public Player(int id, Game game, byte strength) {
