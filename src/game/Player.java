@@ -9,7 +9,7 @@ import environment.Cell;
  * @author luismota
  *
  */
-public abstract class Player  {
+public abstract class Player{
 
 
 	protected  Game game;

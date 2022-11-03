@@ -3,9 +3,17 @@ package environment;
 import game.Game;
 import game.Player;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+
 public class Cell {
 	private Coordinate position;
 	private Game game;
+	private Lock lock = new ReentrantLock();
+	private Condition isFull = lock.newCondition();
+
 	private Player player=null;
 	
 	public Cell(Coordinate position,Game g) {
@@ -28,8 +36,28 @@ public class Cell {
 	}
 
 	// Should not be used like this in the initial state: cell might be occupied, must coordinate this operation
-	public void setPlayer(Player player) {
-		this.player = player;
+	//TODO Sincronização
+	public void setPlayer(Player player) throws InterruptedException{
+		lock.lock();
+		try{
+			while(this.player != null){
+				isFull.await();
+			}
+			this.player = player;
+		}finally {
+			lock.unlock();
+		}
+	}
+
+	public void removePlayer() throws InterruptedException{
+		lock.lock();
+		try{
+			this.player = null;
+			isFull.signal();
+		}finally {
+			lock.unlock();
+		}
+
 	}
 
 	@Override
