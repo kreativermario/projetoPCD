@@ -23,27 +23,21 @@ public class Game extends Observable {
 	public static final long INITIAL_WAITING_TIME = 10000;
 	protected Cell[][] board;
 
-	//Lista de bots
-	private List<Cell> bots = new ArrayList<Cell>();
-
-
 	public Game() {
 		board = new Cell[Game.DIMX][Game.DIMY];
 	
 		for (int x = 0; x < Game.DIMX; x++) 
 			for (int y = 0; y < Game.DIMY; y++) 
 				board[x][y] = new Cell(new Coordinate(x, y),this);
-		addPlayersToGame(); // Adiciona jogadores reais
-
-		for(Cell cell : bots){
-			System.err.println(cell.getPlayer());
-		}
+		addBotsToGame(); // Adiciona jogadores reais
 	}
+
+
 
 	/**
 	 * Colocar jogadores no jogo
 	 */
-	private void addPlayersToGame(){
+	private void addBotsToGame(){
 		for(int i = 1; i <= NUM_PLAYERS; i++){
 			Random r = new Random();
 			int low = 1;
@@ -57,7 +51,7 @@ public class Game extends Observable {
 			try{
 				Cell initCell = getCell(initCoordinate);
 				initCell.setPlayer(player);
-				bots.add(initCell);
+				player.start();
 				notifyChange();
 			}catch (InterruptedException e){
 				System.err.println("Player ja esta na mesma localizacao");
@@ -73,11 +67,11 @@ public class Game extends Observable {
 	 * @return Cell
 	 */
 	public Cell getCellByPlayer(Player player){
-		for(Cell cell : bots){
-			if (cell.getPlayer().equals(player)){
-				return cell;
-			}
-		}
+		for (int x = 0; x < Game.DIMX; x++)
+			for (int y = 0; y < Game.DIMY; y++)
+				if(board[x][y].getPlayer() != null)
+					if(board[x][y].getPlayer().equals(player))
+				 		return board[x][y];
 		return null;
 	}
 

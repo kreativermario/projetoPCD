@@ -32,6 +32,12 @@ public class Coordinate {
 		return new Coordinate((int)(Math.random()* Game.DIMX),(int)(Math.random()*Game.DIMY));
 	}
 
+	public static boolean isValid(Coordinate coordinate){
+		if(coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= Game.DIMX || coordinate.y >= Game.DIMY){
+			return false;
+		}
+		return true;
+	}
 
 	public Coordinate translate(Coordinate vector) {
 		return new Coordinate(x+vector.x, y+vector.y);

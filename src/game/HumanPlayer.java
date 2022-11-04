@@ -6,7 +6,17 @@ public class HumanPlayer extends Player{
             System.err.println("Created Human " + super.toString());
         }
 
-        public boolean isHumanPlayer() {
+    @Override
+    public void run() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    public boolean isHumanPlayer() {
             return true;
         }
 }
