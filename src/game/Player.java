@@ -31,9 +31,15 @@ public abstract class Player extends Thread{
 		originalStrength=strength;
 	}
 
+	public void initializeLocation(){
+		try {
+			game.addPlayerToGame(this);
+			System.err.println("Created Bot " + id + " AT " + getCurrentCell().getPosition());
+		}catch (InterruptedException e){
+			e.printStackTrace();
+		}
 
-
-
+	}
 	public abstract void run();
 	public abstract boolean isHumanPlayer();
 	

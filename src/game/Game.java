@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class Game extends Observable {
 
-	public static final int DIMY = 15;
-	public static final int DIMX = 15;
+	public static final int DIMY = 3;
+	public static final int DIMX = 3;
 	private static final int NUM_PLAYERS = 4; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
@@ -44,19 +44,7 @@ public class Game extends Observable {
 			int high = (int) MAX_INITIAL_STRENGTH + 1; // Exclusivo, logo é de 1 a 3 random
 			int strength = r.nextInt(high-low) + low;
 			Player player = new BotPlayer(i, this, (byte) strength);
-
-			Coordinate initCoordinate = Coordinate.getRandomCoordinate();
-			//TODO Teste Coordinate initCoordinate = new Coordinate(4,4);
-
-			try{
-				Cell initCell = getCell(initCoordinate);
-				initCell.setPlayer(player);
-				player.start();
-				notifyChange();
-			}catch (InterruptedException e){
-				System.err.println("Player ja esta na mesma localizacao");
-			}
-
+			player.start();
 		}
 
 	}
@@ -80,14 +68,11 @@ public class Game extends Observable {
 	/** 
 	 * @param player 
 	 */
-//	public void addPlayerToGame(Player player) {
-//		Cell initialPos=getRandomCell();
-//		initialPos.setPlayer(player);
-//
-//		// To update GUI
-//		notifyChange();
-//
-//	}
+	public void addPlayerToGame(Player player) throws InterruptedException {
+		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
+		Cell initCell = getCell(initCoordinate);
+		initCell.setPlayer(player);
+	}
 
 	/**
 	 * Obtém a célula dado uma coordenada

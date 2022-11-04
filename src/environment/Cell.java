@@ -41,7 +41,7 @@ public class Cell {
 		lock.lock();
 		try{
 			while(this.player != null){
-				System.err.println("HÁ PLAYER NA MESMA LOCALIZAÇÃO!");
+				System.out.println(Thread.currentThread().toString() + " STUCK AT " + getPosition());
 				isFull.await();
 			}
 			this.player = player;

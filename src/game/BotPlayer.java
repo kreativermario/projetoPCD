@@ -20,12 +20,11 @@ public class BotPlayer extends Player{
 
 	public BotPlayer(int id, Game game, byte strength) {
 		super(id, game, strength);
-		System.err.println("Created Bot " + super.toString() );
 	}
 
 	@Override
 	public void run(){
-
+		super.initializeLocation();
 		try {
 			Thread.sleep(Game.INITIAL_WAITING_TIME);
 			while(true){
@@ -46,13 +45,15 @@ public class BotPlayer extends Player{
 		Coordinate directionVector = newDirection.getVector();
 		Cell currentCell = super.getCurrentCell();
 		Coordinate newCoordinate = currentCell.getPosition().translate(directionVector);
-		System.out.println("New coordinates -> " + newCoordinate);
+		System.out.println("BOT " + super.getIdentification()  + "New coordinates -> " + newCoordinate);
 		// Se as novas coordenadas não forem válidas, não mexer
 		if(Coordinate.isValid(newCoordinate)){
 			try{
 				currentCell.removePlayer();
 				Cell newCell = game.getCell(newCoordinate);
-				System.out.println("New cell -> " + newCell.getPosition());
+				System.out.println("BOT " + super.getIdentification()  + "New cell -> " + newCell.getPosition());
+				// Se a posição já estiver ocupada
+				if(newCell.isOcupied()) return;
 				newCell.setPlayer(this);
 				game.notifyChange();
 
@@ -60,12 +61,6 @@ public class BotPlayer extends Player{
 				e.printStackTrace(); //TODO tratar
 			}
 		}
-		return;
-
-
-
-
-
 	}
 
 	@Override
