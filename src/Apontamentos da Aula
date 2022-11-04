@@ -1,0 +1,32 @@
+                                    <4> Fases de Desenvolvimento
+
+------------------------------------------------------------------------------------------------------------------
+
+1 - Colocação inicial de jogadores
+ - Variáveis condicionais para colocação inicial dos jogadores (estratégia tem de ser diferente da fase 4)
+ - Cell é a matriz de jogo
+ - Acesso à Cell é sincronizado
+ - Cell é o recurso partilhado
+ - Jogo começa só com bots (nº de automáticos)
+ - no "removePlayer" não deve bloquear
+
+
+
+------------------------------------------------------------------------------------------------------------------
+2 - Movimentação básica de jogadores automáticos (BOTS)
+ - Intervalo de repetição usa Game.REFRESH_INTERVAL
+ - A cada movimento é desencadeada a atualização da interface -> notifyChange()
+ - Classe Player extends Thread
+ - O movimento e o clock vão ser na classe Game
+ - Guardar lista de jogadores para evitar repetidas verificações da matriz
+ - Movimento random não pode sair da dimensão da board
+
+
+
+------------------------------------------------------------------------------------------------------------------
+3 - Movimentação completa dos jogadores
+
+
+
+------------------------------------------------------------------------------------------------------------------
+4 - Resolução de imobilização do movimento
