@@ -4,21 +4,23 @@ package game;
 import environment.Cell;
 import environment.Coordinate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Random;
 
 public class Game extends Observable {
 
-	public static final int DIMY = 5;
-	public static final int DIMX = 5;
+	public static final int DIMY = 15;
+	public static final int DIMX = 15;
 	private static final int NUM_PLAYERS = 4; //TODO era 90 players
+
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
-
 	protected Cell[][] board;
 
 	public Game() {
@@ -27,50 +29,33 @@ public class Game extends Observable {
 		for (int x = 0; x < Game.DIMX; x++) 
 			for (int y = 0; y < Game.DIMY; y++) 
 				board[x][y] = new Cell(new Coordinate(x, y),this);
-		addPlayersToGame();
+		addBotsToGame(); // Adiciona jogadores reais
 	}
 
+
+
 	/**
-	 * Gera jogadores bots para o jogo
+	 * Colocar jogadores no jogo
 	 */
-	private void addPlayersToGame(){
-		for(int i = 1; i <= Game.NUM_PLAYERS; i++){
+	private void addBotsToGame(){
+		for(int i = 1; i <= NUM_PLAYERS; i++){
 			Random r = new Random();
 			int low = 1;
-			int high = 4; // Exclusivo, logo é de 1 a 3 random
+			int high = (int) MAX_INITIAL_STRENGTH + 1; // Exclusivo, logo é de 1 a 3 random
 			int strength = r.nextInt(high-low) + low;
-
-			Player player = new Player(i,this, (byte) strength) {
-				@Override
-				public boolean isHumanPlayer() {
-					return false;
-				}
-			};
+			Player player = new BotPlayer(i, this, (byte) strength);
 
 			Coordinate initCoordinate = Coordinate.getRandomCoordinate();
-			//TODO Talvez livrar de um duplo for so para pesquisar a celula e colocar player. Fazer um get diretamente
-			//TODO atraves da geracao de uma coordenada aleatoria e colocar la
+			//TODO Teste Coordinate initCoordinate = new Coordinate(4,4);
 
-			//TODO se a celula ja tiver player, fazer aqui um wait e depois colocar. Precisamos de implementar movimento
-			// E o clock do jogo
-			if(board[initCoordinate.x][initCoordinate.y].isOcupied()){
-				System.err.println("Célula " + board[initCoordinate.x][initCoordinate.y].getPosition()
-				+ " já tem player");
-			}else{
-				board[initCoordinate.x][initCoordinate.y].setPlayer(player);
+			try{
+				Cell initCell = getCell(initCoordinate);
+				initCell.setPlayer(player);
+				player.start();
+				notifyChange();
+			}catch (InterruptedException e){
+				System.err.println("Player ja esta na mesma localizacao");
 			}
-
-			/*for (int x = 0; x < Game.DIMX; x++) {
-				for (int y = 0; y < Game.DIMY; y++) {
-					if (board[x][y].getPosition().equals(initialPos.getPosition())) {
-						board[x][y].setPlayer(player);
-					}
-				}
-			}*/
-
-			System.err.println("Player generated -> " + player.toString());
-			// To update GUI
-			notifyChange();
 
 		}
 
@@ -85,8 +70,9 @@ public class Game extends Observable {
 		for (int x = 0; x < Game.DIMX; x++)
 			for (int y = 0; y < Game.DIMY; y++)
 				if(board[x][y].getPlayer() != null)
-					if (board[x][y].getPlayer().equals(player)) return board[x][y];
-		return null; // Return null se nao for encontrado
+					if(board[x][y].getPlayer().equals(player))
+				 		return board[x][y];
+		return null;
 	}
 
 
@@ -94,15 +80,20 @@ public class Game extends Observable {
 	/** 
 	 * @param player 
 	 */
-	public void addPlayerToGame(Player player) {
-		Cell initialPos=getRandomCell();
-		initialPos.setPlayer(player);
-		
-		// To update GUI
-		notifyChange();
-		
-	}
+//	public void addPlayerToGame(Player player) {
+//		Cell initialPos=getRandomCell();
+//		initialPos.setPlayer(player);
+//
+//		// To update GUI
+//		notifyChange();
+//
+//	}
 
+	/**
+	 * Obtém a célula dado uma coordenada
+	 * @param at Coordinate
+	 * @return board[at.x][at.y] Cell
+	 */
 	public Cell getCell(Coordinate at) {
 		return board[at.x][at.y];
 	}

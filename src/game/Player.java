@@ -9,13 +9,12 @@ import environment.Cell;
  * @author luismota
  *
  */
-public abstract class Player  {
+public abstract class Player extends Thread{
 
 
 	protected  Game game;
 
 	private int id;
-
 	private byte currentStrength;
 	protected byte originalStrength;
 
@@ -32,6 +31,10 @@ public abstract class Player  {
 		originalStrength=strength;
 	}
 
+
+
+
+	public abstract void run();
 	public abstract boolean isHumanPlayer();
 	
 	@Override
