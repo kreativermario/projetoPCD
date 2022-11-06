@@ -40,6 +40,8 @@ public abstract class Player extends Thread{
 		}
 
 	}
+
+	public abstract void move();
 	public abstract void run();
 	public abstract boolean isHumanPlayer();
 	
