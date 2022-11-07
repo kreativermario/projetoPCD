@@ -31,6 +31,9 @@ public abstract class Player extends Thread{
 		originalStrength=strength;
 	}
 
+	/**
+	 * Metodo utilizado para inicializar a posicao do jogador no inicio do jogo
+	 */
 	public void initializeLocation(){
 		try {
 			game.addPlayerToGame(this);
@@ -41,7 +44,30 @@ public abstract class Player extends Thread{
 
 	}
 
-	public abstract void move();
+	/**
+	 * Torna o player num obstaculo se perdeu
+	 */
+	public void setObstacle(){
+		this.currentStrength = 0;
+	}
+
+
+	/**
+	 * Metodo utilizado para adicionar energia ao jogador depois de uma disputa
+	 * @param strength
+	 */
+	public void addStrength(int strength){
+		if(getCurrentStrength() + strength >= 10){
+			//TODO Finish game
+			System.out.println("Player " + getIdentification()  + " -> Finished the game!");
+		}
+		this.currentStrength += strength;
+	}
+	
+	
+	
+
+	public abstract void move() throws InterruptedException;
 	public abstract void run();
 	public abstract boolean isHumanPlayer();
 	

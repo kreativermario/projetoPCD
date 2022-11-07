@@ -43,7 +43,8 @@ public class BotPlayer extends Player{
 				}
 			}
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			System.err.println(super.toString() + " INTERRUPTED!");
+			return;
 		}
 	}
 
@@ -52,33 +53,35 @@ public class BotPlayer extends Player{
 	 * Metodo do botPlayer onde ele se mexe aleatoriamente
 	 */
 	@Override
-	public void move(){
+	public void move() throws InterruptedException {
 		// Obter a nova direcao random
 		Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
 		Coordinate directionVector = newDirection.getVector();
-
 		// Obter a sua celula atual
 		Cell currentCell = super.getCurrentCell();
+
 		// Obter a nova coordenada
 		Coordinate newCoordinate = currentCell.getPosition().translate(directionVector);
-		System.out.println("BOT " + super.getIdentification()  + "New coordinates -> " + newCoordinate); //TODO Debug
 		// Se as novas coordenadas não forem válidas, não mexer
 		if(Coordinate.isValid(newCoordinate)){
-			try{
+			Cell newCell = game.getCell(newCoordinate);
 
-				currentCell.removePlayer();
-				Cell newCell = game.getCell(newCoordinate);
-				System.out.println("BOT " + super.getIdentification()  + "New cell -> " + newCell.getPosition());
+			System.err.println(super.toString() + " moving to... " + newCell.getPosition());
 
-				//TODO Se a posicao ja estiver ocupada chamar um metodo de fight?
-				if(newCell.isOcupied()) return;
-
-				newCell.setPlayer(this);
-				game.notifyChange();
-
-			}catch (InterruptedException e){
-				e.printStackTrace(); //TODO tratar
+			//TODO Comportamento para obstaculos
+			if(newCell.isObstacle()){
+				System.err.println(super.toString() + " tried to move to [OBSTACLE]");
+				return;
 			}
+			//TODO Se a posicao ja estiver ocupada chamar um metodo de fight?
+			if(newCell.isOcupied()){
+				newCell.fight(this);
+				game.notifyChange();
+				return;
+			}
+			currentCell.removePlayer();
+			newCell.setPlayer(this);
+			game.notifyChange();
 		}
 	}
 
