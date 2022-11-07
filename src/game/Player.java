@@ -37,7 +37,7 @@ public abstract class Player extends Thread{
 	public void initializeLocation(){
 		try {
 			game.addPlayerToGame(this);
-			System.err.println("Created Bot " + id + " AT " + getCurrentCell().getPosition());
+			System.err.println("Created Player " + id + " AT " + getCurrentCell().getPosition());
 		}catch (InterruptedException e){
 			e.printStackTrace();
 		}
