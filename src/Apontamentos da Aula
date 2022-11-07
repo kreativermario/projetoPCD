@@ -17,15 +17,18 @@
  - Intervalo de repetição usa Game.REFRESH_INTERVAL
  - A cada movimento é desencadeada a atualização da interface -> notifyChange()
  - Classe Player extends Thread
- - O movimento e o clock vão ser na classe Game
- - Guardar lista de jogadores para evitar repetidas verificações da matriz
+ - O movimento e o clock vão ser em cada Thread do jogador
+ - Jogadores verificam se a nova posicao tem player ou nao
+        se tiver, faz fight
+        se nao tiver, faz um "move", remove a celula atual e coloca-se na nova
  - Movimento random não pode sair da dimensão da board
-
-
 
 ------------------------------------------------------------------------------------------------------------------
 3 - Movimentação completa dos jogadores
-
+    - move chama o fight() da cell, ai decide-se quem ganha, coloca-se como obstaculo aquele que perde e
+    interrompe a thread do bot que perdeu
+    - move verifica se tem obstaculo antes de tudo
+    -
 
 
 ------------------------------------------------------------------------------------------------------------------
