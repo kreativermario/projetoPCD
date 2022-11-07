@@ -3,12 +3,12 @@ package game;
 
 import environment.Cell;
 import environment.Coordinate;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Random;
 
+/**
+ * Classe principal que processa o jogo
+ */
 public class Game extends Observable {
 
 	public static final int DIMY = 3;
@@ -23,13 +23,17 @@ public class Game extends Observable {
 	public static final long INITIAL_WAITING_TIME = 10000;
 	protected Cell[][] board;
 
+	/**
+	 * Metodo construtor do jogo
+	 */
 	public Game() {
 		board = new Cell[Game.DIMX][Game.DIMY];
 	
 		for (int x = 0; x < Game.DIMX; x++) 
 			for (int y = 0; y < Game.DIMY; y++) 
 				board[x][y] = new Cell(new Coordinate(x, y),this);
-		addBotsToGame(); // Adiciona jogadores reais
+		// Adiciona bots ao jogo
+		addBotsToGame();
 	}
 
 
