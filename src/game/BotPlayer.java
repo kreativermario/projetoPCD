@@ -22,32 +22,6 @@ public class BotPlayer extends Player{
 		super(id, game, strength);
 	}
 
-	@Override
-	public void run(){
-		// Iniciar a posicao
-		super.initializeLocation();
-		try {
-			// Esperar que todos os players facam load
-			Thread.sleep(Game.INITIAL_WAITING_TIME);
-			while(true){
-				// Mover
-				move();
-				// verificar a sua energia inicial, e mover so em ciclos em que pode
-				switch(this.originalStrength){
-					case 1:
-						Thread.sleep(Game.REFRESH_INTERVAL);
-					case 2:
-						Thread.sleep(Game.REFRESH_INTERVAL*2);
-					case 3:
-						Thread.sleep(Game.REFRESH_INTERVAL*3);
-				}
-			}
-		} catch (InterruptedException e) {
-			System.err.println(super.toString() + " INTERRUPTED!");
-			return;
-		}
-	}
-
 
 	/**
 	 * Metodo do botPlayer onde ele se mexe aleatoriamente

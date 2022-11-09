@@ -38,7 +38,7 @@ public abstract class Player extends Thread{
 		try {
 			game.addPlayerToGame(this);
 			System.err.println("Created Player " + id + " AT " + getCurrentCell().getPosition());
-		}catch (InterruptedException e){
+		}catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -59,16 +59,45 @@ public abstract class Player extends Thread{
 	public void addStrength(int strength){
 		if(getCurrentStrength() + strength >= 10){
 			//TODO Finish game
+			this.currentStrength = 10;
+			game.notifyChange();
+			this.interrupt();
 			System.out.println("Player " + getIdentification()  + " -> Finished the game!");
+			return;
 		}
 		this.currentStrength += strength;
 	}
-	
-	
-	
+
+	@Override
+	public void run(){
+		// Iniciar a posicao, se houver dead player, vai lancar uma excecao Exception
+		initializeLocation();
+
+		try {
+			// Esperar que todos os players facam load
+			Thread.sleep(Game.INITIAL_WAITING_TIME);
+			while(true){
+				// Mover
+				move();
+				// verificar a sua energia inicial, e mover so em ciclos em que pode
+				switch(this.originalStrength){
+					case 1:
+						Thread.sleep(Game.REFRESH_INTERVAL);
+					case 2:
+						Thread.sleep(Game.REFRESH_INTERVAL*2);
+					case 3:
+						Thread.sleep(Game.REFRESH_INTERVAL*3);
+				}
+			}
+		} catch (InterruptedException e) {
+			System.err.println(super.toString() + " INTERRUPTED!");
+			return;
+		}
+	}
+
 
 	public abstract void move() throws InterruptedException;
-	public abstract void run();
+
 	public abstract boolean isHumanPlayer();
 	
 	@Override

@@ -11,9 +11,9 @@ import java.util.Random;
  */
 public class Game extends Observable {
 
-	public static final int DIMY = 3;
-	public static final int DIMX = 3;
-	private static final int NUM_PLAYERS = 4; //TODO era 90 players
+	public static final int DIMY = 9;
+	public static final int DIMX = 9;
+	private static final int NUM_PLAYERS = 12; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
@@ -68,13 +68,20 @@ public class Game extends Observable {
 	}
 
 
-
-	/** 
-	 * @param player 
+	/**
+	 *
+	 * @param player
+	 * @throws InterruptedException
 	 */
-	public void addPlayerToGame(Player player) throws InterruptedException {
+	public void addPlayerToGame(Player player) throws InterruptedException{
 		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
 		Cell initCell = getCell(initCoordinate);
+		// Se a celula gerada for um player morto, tentar fazer spawn outra vez
+		if(initCell.isObstacle()){
+			System.err.println(player + " TENTOU SPAWNAR EM CIMA DE UM DEAD PLAYER");
+			Thread.sleep(MAX_WAITING_TIME_FOR_MOVE);
+			addPlayerToGame(player);
+		}
 		initCell.setPlayer(player);
 	}
 
