@@ -8,13 +8,12 @@ public class CellSemaphore {
     }
 
     public synchronized void acquire() throws InterruptedException{
-        while(this.permits == 0) wait();
+        if(this.permits == 0) return;
         this.permits--;
     }
 
     public synchronized void release(){
         this.permits++;
-        notifyAll();
     }
 
     @Override
