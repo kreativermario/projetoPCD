@@ -35,8 +35,9 @@ public class Game extends Observable {
 				board[x][y] = new Cell(new Coordinate(x, y),this);
 		// Adiciona bots ao jogo
 		addBotsToGame();
-		this.server = new Server(this);
-		server.runServer();
+		//TODO Server
+		//this.server = new Server(this);
+		//server.runServer();
 
 	}
 
