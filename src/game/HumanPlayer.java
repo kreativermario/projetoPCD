@@ -8,15 +8,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
  */
 public class HumanPlayer extends Player{
-        public HumanPlayer(int id, Game game, byte strength) {
-            super(id, game, strength);
-            System.err.println("Created Human " + super.toString());
-        }
+
+    private static AtomicInteger idCounter = new AtomicInteger();
+
+    public HumanPlayer(Game game) {
+        super(createID(), game, (byte) 5);
+        System.err.println("Created Human " + super.toString());
+    }
+
+    /**
+     * Cria um id do Jogador único
+     * @return
+     */
+    private static int createID() {
+        return idCounter.getAndIncrement();
+    }
 
     @Override
     public void run() {
