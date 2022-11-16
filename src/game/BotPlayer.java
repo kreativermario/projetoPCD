@@ -14,48 +14,15 @@ import java.util.Random;
  */
 public class BotPlayer extends Player{
 
-	private static final List<Direction> VALUES = Collections.unmodifiableList(Arrays.asList(Direction.values()));
-	private static final int SIZE = VALUES.size();
-	private static final Random RANDOM = new Random();
-
 	public BotPlayer(int id, Game game, byte strength) {
 		super(id, game, strength);
 	}
 
-	@Override
-	public void run(){
-		// Iniciar a posicao, se houver dead player, vai lancar uma excecao Exception
-		super.initializeLocation();
-
-		try {
-			// Esperar que todos os players facam load
-			Thread.sleep(Game.INITIAL_WAITING_TIME);
-			while(true){
-				// Mover
-				move();
-				// verificar a sua energia inicial, e mover so em ciclos em que pode
-				switch(this.originalStrength){
-					case 1:
-						Thread.sleep(Game.REFRESH_INTERVAL);
-					case 2:
-						Thread.sleep(Game.REFRESH_INTERVAL*2);
-					case 3:
-						Thread.sleep(Game.REFRESH_INTERVAL*3);
-				}
-			}
-		} catch (InterruptedException e) {
-			System.err.println(super.toString() + " INTERRUPTED!");
-			return;
-		}
-	}
 
 	/**
 	 * Metodo do botPlayer onde ele se mexe aleatoriamente
 	 */
-	@Override
-	public void move() throws InterruptedException {
-		// Obter a nova direcao random
-		Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
+	public void move(Direction newDirection) throws InterruptedException {
 		Coordinate directionVector = newDirection.getVector();
 		// Obter a sua celula atual
 		Cell currentCell = super.getCurrentCell();

@@ -3,6 +3,12 @@ package game;
 
 
 import environment.Cell;
+import environment.Direction;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Represents a player.
@@ -17,6 +23,11 @@ public abstract class Player extends Thread{
 	private int id;
 	private byte currentStrength;
 	protected byte originalStrength;
+
+	// Métodos para escolher uma direção random
+	private static final List<Direction> VALUES = Collections.unmodifiableList(Arrays.asList(Direction.values()));
+	private static final int SIZE = VALUES.size();
+	private static final Random RANDOM = new Random();
 
 	// TODO: get player position from data in game
 	public Cell getCurrentCell() {
@@ -44,6 +55,32 @@ public abstract class Player extends Thread{
 
 	}
 
+	@Override
+	public void run(){
+		// Iniciar a posicao, se houver dead player, vai lancar uma excecao Exception
+		initializeLocation();
+
+		try {
+			// Esperar que todos os players facam load
+			Thread.sleep(Game.INITIAL_WAITING_TIME);
+			while(true){
+				if(!isHumanPlayer()){
+					// Obter a nova direcao random
+					Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
+					move(newDirection);
+				}
+				//TODO Como fazer para mover clientes remotos?
+				// Mover para humano?
+
+				// verificar a sua energia inicial, e mover so em ciclos em que pode
+				Thread.sleep(Game.REFRESH_INTERVAL*originalStrength);
+			}
+		} catch (InterruptedException e) {
+			System.err.println(super.toString() + " INTERRUPTED!");
+			return;
+		}
+	}
+
 	/**
 	 * Torna o player num obstaculo se perdeu
 	 */
@@ -68,8 +105,7 @@ public abstract class Player extends Thread{
 		this.currentStrength += strength;
 	}
 
-	public abstract void run();
-	public abstract void move() throws InterruptedException;
+	public abstract void move(Direction d) throws InterruptedException;
 
 	public abstract boolean isHumanPlayer();
 	

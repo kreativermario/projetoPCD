@@ -11,9 +11,9 @@ import java.util.Random;
  */
 public class Game extends Observable {
 
-	public static final int DIMY = 4;
-	public static final int DIMX = 4;
-	private static final int NUM_PLAYERS = 2; //TODO era 90 players
+	public static final int DIMY = 15;
+	public static final int DIMX = 15;
+	private static final int NUM_PLAYERS = 40; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 

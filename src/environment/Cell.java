@@ -71,8 +71,7 @@ public class Cell {
 		try{
 			System.err.println(opponent.toString() + " is going to fight " + this.player.toString()); //TODO Debug
 			mutex.acquire();
-			System.err.println(this.getPosition() + " ACQUIRING MUTEX: " + mutex.toString()); //TODO Debug
-
+			//TODO tenho que freezar o outro player de mexer!
 			int thisPlayerStrength = this.player.getCurrentStrength();
 			int otherPlayerStrength = opponent.getCurrentStrength();
 

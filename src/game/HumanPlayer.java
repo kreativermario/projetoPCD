@@ -46,7 +46,7 @@ public class HumanPlayer extends Player{
     }
 
     @Override
-    public void move() {
+    public void move(Direction d) throws InterruptedException {
 
     }
 
