@@ -87,7 +87,7 @@ public class Game extends Observable {
 			Thread.sleep(MAX_WAITING_TIME_FOR_MOVE);
 			addPlayerToGame(player);
 		}
-		initCell.setPlayer(player);
+		initCell.setPlayer(player, false);
 	}
 
 	/**

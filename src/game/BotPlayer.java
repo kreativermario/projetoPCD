@@ -33,7 +33,7 @@ public class BotPlayer extends Player{
 		if(Coordinate.isValid(newCoordinate)){
 			Cell newCell = game.getCell(newCoordinate);
 
-			System.err.println(super.toString() + " moving to... " + newCell.getPosition());
+			//System.err.println(super.toString() + " moving to... " + newCell.getPosition());
 
 			//TODO Comportamento para obstaculos
 			if(newCell.isObstacle()){
@@ -47,7 +47,7 @@ public class BotPlayer extends Player{
 				return;
 			}
 			currentCell.removePlayer();
-			newCell.setPlayer(this);
+			newCell.setPlayer(this, true);
 			game.notifyChange();
 		}
 	}

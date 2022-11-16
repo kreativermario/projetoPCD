@@ -49,7 +49,7 @@ public class Cell {
 		return isObstacle;
 	}
 
-	public void setObstacle(boolean isObstacle){
+	public synchronized void setObstacle(boolean isObstacle){
 		this.player.setObstacle();
 		this.isObstacle = isObstacle;
 	}
@@ -63,6 +63,7 @@ public class Cell {
 		return player;
 	}
 
+
 	/**
 	 * Metodo que trata a disputa entre dois players
 	 * @param opponent
@@ -75,8 +76,8 @@ public class Cell {
 			int thisPlayerStrength = this.player.getCurrentStrength();
 			int otherPlayerStrength = opponent.getCurrentStrength();
 
+			// Energias iguais
 			if(thisPlayerStrength == otherPlayerStrength){
-				System.err.println(opponent.toString() + " has SAME strength as " + this.player.toString()); //TODO Debug
 				// Random 0 ou 1
 				int chance = (int) Math.round( Math.random());
 				switch(chance){
@@ -121,12 +122,14 @@ public class Cell {
 
 	// Should not be used like this in the initial state: cell might be occupied, must coordinate this operation
 	//TODO Deve ser so usado na inicializacao
-	public void setPlayer(Player player) throws InterruptedException{
+	public void setPlayer(Player player, boolean isMove) throws InterruptedException{
 		lock.lock();
 		try{
 			while(this.player != null){
-				System.out.println(Thread.currentThread().toString() + " STUCK AT " + getPosition());
-				isFull.await();
+				if(!isMove) {
+					System.out.println(player + " TRIED TO SPAWN [STUCK!] AT " + getPosition());
+					isFull.await();
+				}
 			}
 			this.player = player;
 		}finally {
