@@ -1,3 +1,4 @@
+/*
 package game;
 
 import java.io.BufferedReader;
@@ -66,10 +67,12 @@ public class RemoteClient {
     }
 
     public void closeConnection(){
-        /**
+        */
+/**
          * Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
          * RESOURCE LEAK! Teria que fazer try catch para cada um.
-         */
+         *//*
+
         try{
             input.close();
             output.close();
@@ -80,3 +83,4 @@ public class RemoteClient {
     }
 
 }
+*/

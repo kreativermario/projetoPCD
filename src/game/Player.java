@@ -2,6 +2,7 @@ package game;
 
 
 
+import coordination.CellSemaphore;
 import environment.Cell;
 import environment.Direction;
 
@@ -19,15 +20,15 @@ public abstract class Player extends Thread{
 
 
 	protected  Game game;
-
 	private int id;
 	private byte currentStrength;
 	protected byte originalStrength;
 
 	// Métodos para escolher uma direção random
-	private static final List<Direction> VALUES = Collections.unmodifiableList(Arrays.asList(Direction.values()));
+	private static final List<Direction> VALUES = List.of(Direction.values());
 	private static final int SIZE = VALUES.size();
 	private static final Random RANDOM = new Random();
+
 
 	// TODO: get player position from data in game
 	public Cell getCurrentCell() {
@@ -63,7 +64,7 @@ public abstract class Player extends Thread{
 		try {
 			// Esperar que todos os players facam load
 			Thread.sleep(Game.INITIAL_WAITING_TIME);
-			while(true){
+			while (true) {
 				if(!isHumanPlayer()){
 					// Obter a nova direcao random
 					Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
@@ -76,7 +77,7 @@ public abstract class Player extends Thread{
 				Thread.sleep(Game.REFRESH_INTERVAL*originalStrength);
 			}
 		} catch (InterruptedException e) {
-			System.err.println(super.toString() + " INTERRUPTED!");
+			System.err.println("Thread: " + super.threadId() + ";  Player " + getIdentification() + " INTERRUPTED!");
 			System.err.println("Player " + getIdentification()  + " -> Finished the game!");
 			return;
 		}
@@ -110,11 +111,11 @@ public abstract class Player extends Thread{
 	public abstract void move(Direction d) throws InterruptedException;
 
 	public abstract boolean isHumanPlayer();
-	
+
 	@Override
 	public String toString() {
-		return "Player [id=" + id + ", currentStrength=" + currentStrength + ", getCurrentCell()=" + getCurrentCell()
-		+ "]";
+		return "[ Player " + id + " | Current Strength = " + currentStrength + " | Current Cell = " + getCurrentCell()
+				+ " ] ";
 	}
 
 	@Override

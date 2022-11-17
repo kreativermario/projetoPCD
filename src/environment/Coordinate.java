@@ -33,10 +33,7 @@ public class Coordinate {
 	}
 
 	public static boolean isValid(Coordinate coordinate){
-		if(coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= Game.DIMX || coordinate.y >= Game.DIMY){
-			return false;
-		}
-		return true;
+		return coordinate.x >= 0 && coordinate.y >= 0 && coordinate.x < Game.DIMX && coordinate.y < Game.DIMY;
 	}
 
 	public Coordinate translate(Coordinate vector) {

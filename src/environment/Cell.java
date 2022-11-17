@@ -17,7 +17,7 @@ public class Cell {
 	private CellSemaphore mutex = new CellSemaphore(1);
 	private Player player=null;
 	private boolean isObstacle;
-	
+
 	public Cell(Coordinate position,Game g) {
 		super();
 		this.position = position;
@@ -70,8 +70,9 @@ public class Cell {
 	 */
 	public void fight(Player opponent) throws InterruptedException{
 		try{
-			System.err.println(opponent.toString() + " is going to fight " + this.player.toString()); //TODO Debug
-			mutex.acquire();
+			mutex.acquire(); //TODO Debug
+			System.err.println(" ACQUIRING MUTEX -->> " + this.getPosition() + " " + mutex.toString()); //TODO Debug
+			System.err.println(this.player.toString() + " is going to fight " + opponent.toString()); //TODO Debug
 			//TODO tenho que freezar o outro player de mexer!
 			int thisPlayerStrength = this.player.getCurrentStrength();
 			int otherPlayerStrength = opponent.getCurrentStrength();
@@ -79,42 +80,41 @@ public class Cell {
 			// Energias iguais
 			if(thisPlayerStrength == otherPlayerStrength){
 				// Random 0 ou 1
+				System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent.toString());
 				int chance = (int) Math.round( Math.random());
-				switch(chance){
-					case 0:
+				switch (chance) {
+					case 0 -> {
 						this.player.addStrength(otherPlayerStrength);
-						System.err.println(this.player + " WON!"); //TODO Debug
+						System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 						opponent.getCurrentCell().setObstacle(true);
 						opponent.interrupt();
-						return;
-					case 1:
+					}
+					case 1 -> {
 						opponent.addStrength(thisPlayerStrength);
-						System.err.println(opponent + " WON!"); //TODO Debug
+						System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 						this.setObstacle(true);
-						player.interrupt();
-						return;
+						this.player.interrupt();
+					}
 				}
 
 			// O player nesta celula ganha ao outro que entra nesta celula
-			} else if(thisPlayerStrength > otherPlayerStrength){
+			} else if (thisPlayerStrength > otherPlayerStrength) {
 				this.player.addStrength(opponent.getCurrentStrength());
-				System.err.println(this.player + " WON!"); //TODO Debug
+				System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 				opponent.getCurrentCell().setObstacle(true);
 				opponent.interrupt();
-				return;
 
 			// O outro player ganha ao player que esta nesta celula
-			}else{
+			} else {
 				opponent.addStrength(this.player.getCurrentStrength());
-				System.err.println(opponent + " WON!"); //TODO Debug
+				System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 				this.setObstacle(true);
 				this.player.interrupt();
-				return;
 			}
 
-		}finally {
+		} finally {
 			mutex.release();
-			System.err.println(this.getPosition() + " RELEASING MUTEX: " + mutex.toString()); //TODO Debug
+			System.err.println(" RELEASING MUTEX -->> " + this.getPosition() + " " + mutex.toString()); //TODO Debug
 		}
 
 	}
@@ -127,7 +127,8 @@ public class Cell {
 		try{
 			while(this.player != null){
 				if(!isMove) {
-					System.out.println(player + " TRIED TO SPAWN [STUCK!] AT " + getPosition());
+					System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT " + getPosition()
+							+ " || Player " + this.player.getIdentification() + " ALREADY THERE!!");
 					isFull.await();
 				}
 			}
@@ -155,6 +156,6 @@ public class Cell {
 	public String toString(){
 		return this.position.toString();
 	}
-	
+
 
 }

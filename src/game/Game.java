@@ -11,13 +11,13 @@ import java.util.Random;
  */
 public class Game extends Observable {
 
-	public static final int DIMY = 15;
-	public static final int DIMX = 15;
-	private static final int NUM_PLAYERS = 40; //TODO era 90 players
+	public static final int DIMY = 4;
+	public static final int DIMX = 4;
+	private static final int NUM_PLAYERS = 12; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
-	public Server server;
+	//public Server server;
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
@@ -29,9 +29,9 @@ public class Game extends Observable {
 	 */
 	public Game() {
 		board = new Cell[Game.DIMX][Game.DIMY];
-	
-		for (int x = 0; x < Game.DIMX; x++) 
-			for (int y = 0; y < Game.DIMY; y++) 
+
+		for (int x = 0; x < Game.DIMX; x++)
+			for (int y = 0; y < Game.DIMY; y++)
 				board[x][y] = new Cell(new Coordinate(x, y),this);
 		// Adiciona bots ao jogo
 		addBotsToGame();
@@ -40,8 +40,6 @@ public class Game extends Observable {
 		//server.runServer();
 
 	}
-
-
 
 	/**
 	 * Colocar jogadores no jogo
@@ -68,7 +66,7 @@ public class Game extends Observable {
 			for (int y = 0; y < Game.DIMY; y++)
 				if(board[x][y].getPlayer() != null)
 					if(board[x][y].getPlayer().equals(player))
-				 		return board[x][y];
+						return board[x][y];
 		return null;
 	}
 
@@ -99,7 +97,7 @@ public class Game extends Observable {
 		return board[at.x][at.y];
 	}
 
-	/**	
+	/**
 	 * Updates GUI. Should be called anytime the game state changes
 	 */
 	public void notifyChange() {
@@ -108,7 +106,6 @@ public class Game extends Observable {
 	}
 
 	public Cell getRandomCell() {
-		Cell newCell=getCell(new Coordinate((int)(Math.random()*Game.DIMX),(int)(Math.random()*Game.DIMY)));
-		return newCell; 
+		return getCell(new Coordinate((int)(Math.random()*Game.DIMX),(int)(Math.random()*Game.DIMY)));
 	}
 }

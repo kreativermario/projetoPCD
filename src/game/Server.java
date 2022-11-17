@@ -1,3 +1,4 @@
+/*
 package game;
 
 import java.io.BufferedReader;
@@ -41,9 +42,11 @@ public class Server {
         connectionHandler.start();
     }
 
-    /**
+    */
+/**
      * Classe que trata das conexões dos vários clientes, é a thread que trata
-     */
+     *//*
+
     public class ConnectionHandler extends Thread{
 
         // O que é necessário para ligar um cliente
@@ -98,10 +101,12 @@ public class Server {
         }
 
         public void closeConnection() {
-            /**
+            */
+/**
              * Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
              * RESOURCE LEAK! Teria que fazer try catch para cada um.
-             */
+             *//*
+
             try{
                 input.close();
                 output.close();
@@ -118,3 +123,4 @@ public class Server {
 
 
 }
+*/
