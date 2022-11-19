@@ -13,7 +13,7 @@ public class Game extends Observable {
 
 	public static final int DIMY = 4;
 	public static final int DIMX = 4;
-	private static final int NUM_PLAYERS = 12; //TODO era 90 players
+	private static final int NUM_PLAYERS = 9; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
@@ -85,7 +85,7 @@ public class Game extends Observable {
 			Thread.sleep(MAX_WAITING_TIME_FOR_MOVE);
 			addPlayerToGame(player);
 		}
-		initCell.setPlayer(player, false);
+		initCell.setPlayer(player);
 	}
 
 	/**

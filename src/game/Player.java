@@ -88,6 +88,7 @@ public abstract class Player extends Thread{
 	 */
 	public void setObstacle(){
 		this.currentStrength = 0;
+		System.err.println("Player " + this.getIdentification() + " DIED!");
 	}
 
 

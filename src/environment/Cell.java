@@ -4,24 +4,43 @@ import coordination.CellSemaphore;
 import game.Game;
 import game.Player;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class Cell {
+public class Cell implements Comparable<Cell>{
 	private Coordinate position;
 	private Game game;
 	private Lock lock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
-	private CellSemaphore mutex = new CellSemaphore(1);
+	private static AtomicInteger idCounter = new AtomicInteger();
+	private int id;
 	private Player player=null;
 	private boolean isObstacle;
 
 	public Cell(Coordinate position,Game g) {
 		super();
+		id = createID();
 		this.position = position;
 		this.game=g;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	private int createID() {
+		return idCounter.getAndIncrement();
+	}
+
+	public synchronized void lock(){
+		this.lock.lock();
+	}
+
+	public synchronized void unlock(){
+		this.lock.unlock();
 	}
 
 	/**
@@ -63,74 +82,119 @@ public class Cell {
 		return player;
 	}
 
+	public void setPlayerTransfer(Player player){
+		this.player = player;
+	}
+
+	public void transferPlayer(Cell to){
+
+		//TODO try locks
+		if(this.compareTo(to) > 0){
+			lock.lock();
+			System.err.println("Locked " + this);
+			to.lock();
+			System.err.println("Locked " + to);
+		}else{
+			to.lock();
+			System.err.println("Locked " + to);
+			lock.lock();
+			System.err.println("Locked " + this);
+		}
+
+		//TODO locks com sucesso vou fazer disputa
+		Player fromPlayer = this.getPlayer();
+
+		if(to.isObstacle()){
+			return;
+		}
+		if(to.isOcupied()){
+			System.err.println(this.player.toString() + " is going to fight " + to.getPlayer().toString()); //TODO Debug
+			to.fight(fromPlayer);
+		}
+		// Não tem player, então é só mover!
+		else {
+			this.removePlayer();
+			to.setPlayerTransfer(fromPlayer);
+		}
+
+		//TODO Acabou a disputa, dar unlock
+		if(this.compareTo(to) > 0){
+			lock.unlock();
+			System.err.println("Unlocked " + this);
+			to.unlock();
+			System.err.println("Unlocked " + to);
+		}else{
+			to.unlock();
+			System.err.println("Unlocked " + to);
+			lock.unlock();
+			System.err.println("Unlocked " + this);
+		}
+
+	}
+
 
 	/**
 	 * Metodo que trata a disputa entre dois players
 	 * @param opponent
 	 */
-	public void fight(Player opponent) throws InterruptedException{
-		try{
-			mutex.acquire(); //TODO Debug
-			System.err.println(" ACQUIRING MUTEX -->> " + this.getPosition() + " " + mutex.toString()); //TODO Debug
-			System.err.println(this.player.toString() + " is going to fight " + opponent.toString()); //TODO Debug
-			//TODO tenho que freezar o outro player de mexer!
-			int thisPlayerStrength = this.player.getCurrentStrength();
-			int otherPlayerStrength = opponent.getCurrentStrength();
+	private Player fight(Player opponent){
 
-			// Energias iguais
-			if(thisPlayerStrength == otherPlayerStrength){
-				// Random 0 ou 1
-				System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent.toString());
-				int chance = (int) Math.round( Math.random());
-				switch (chance) {
-					case 0 -> {
-						this.player.addStrength(otherPlayerStrength);
-						System.err.println(this.player + " PLAYER WON!"); //TODO Debug
-						opponent.getCurrentCell().setObstacle(true);
-						opponent.interrupt();
-					}
-					case 1 -> {
-						opponent.addStrength(thisPlayerStrength);
-						System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
-						this.setObstacle(true);
-						this.player.interrupt();
-					}
+		int thisPlayerStrength = this.player.getCurrentStrength();
+		int otherPlayerStrength = opponent.getCurrentStrength();
+
+		// Energias iguais
+		if(thisPlayerStrength == otherPlayerStrength){
+			// Random 0 ou 1
+			System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent.toString());
+			int chance = (int) Math.round( Math.random());
+			switch (chance) {
+				case 0 -> {
+					this.player.addStrength(otherPlayerStrength);
+					System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+					opponent.getCurrentCell().setObstacle(true);
+					opponent.interrupt();
+					return this.player;
 				}
-
-			// O player nesta celula ganha ao outro que entra nesta celula
-			} else if (thisPlayerStrength > otherPlayerStrength) {
-				this.player.addStrength(opponent.getCurrentStrength());
-				System.err.println(this.player + " PLAYER WON!"); //TODO Debug
-				opponent.getCurrentCell().setObstacle(true);
-				opponent.interrupt();
-
-			// O outro player ganha ao player que esta nesta celula
-			} else {
-				opponent.addStrength(this.player.getCurrentStrength());
-				System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
-				this.setObstacle(true);
-				this.player.interrupt();
+				case 1 -> {
+					opponent.addStrength(thisPlayerStrength);
+					System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+					this.setObstacle(true);
+					this.player.interrupt();
+					return opponent;
+				}
 			}
 
-		} finally {
-			mutex.release();
-			System.err.println(" RELEASING MUTEX -->> " + this.getPosition() + " " + mutex.toString()); //TODO Debug
+		// O player nesta celula ganha ao outro que entra nesta celula
+		} else if (thisPlayerStrength > otherPlayerStrength) {
+			this.player.addStrength(opponent.getCurrentStrength());
+			System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+			opponent.getCurrentCell().setObstacle(true);
+			opponent.interrupt();
+			return this.player;
+
+		// O outro player ganha ao player que esta nesta celula
+		} else {
+			opponent.addStrength(this.player.getCurrentStrength());
+			System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+			this.setObstacle(true);
+			this.player.interrupt();
+			return opponent;
 		}
+		//Caso houve problema
+		return null;
 
 	}
 
 
 	// Should not be used like this in the initial state: cell might be occupied, must coordinate this operation
 	//TODO Deve ser so usado na inicializacao
-	public void setPlayer(Player player, boolean isMove) throws InterruptedException{
+	public void setPlayer(Player player) throws InterruptedException{
 		lock.lock();
 		try{
 			while(this.player != null){
-				if(!isMove) {
-					System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT " + getPosition()
-							+ " || Player " + this.player.getIdentification() + " ALREADY THERE!!");
-					isFull.await();
-				}
+				System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT " + getPosition()
+						+ " || Player " + this.player.getIdentification() + " ALREADY THERE!!");
+				isFull.await();
 			}
 			this.player = player;
 		}finally {
@@ -140,9 +204,8 @@ public class Cell {
 
 	/**
 	 * Remove um player da celula
-	 * @throws InterruptedException
 	 */
-	public void removePlayer() throws InterruptedException{
+	public void removePlayer(){
 		lock.lock();
 		try{
 			this.player = null;
@@ -158,4 +221,8 @@ public class Cell {
 	}
 
 
+	@Override
+	public int compareTo(Cell o) {
+		return this.id - o.getId();
+	}
 }
