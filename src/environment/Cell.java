@@ -16,6 +16,9 @@ public class Cell implements Comparable<Cell>{
 	private Lock lock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
 	private static AtomicInteger idCounter = new AtomicInteger();
+
+	private static AtomicInteger fightCounter = new AtomicInteger(); //TODO Debug id da fight
+
 	private int id;
 	private Player player=null;
 	private boolean isObstacle;
@@ -34,6 +37,11 @@ public class Cell implements Comparable<Cell>{
 	private int createID() {
 		return idCounter.getAndIncrement();
 	}
+
+	private int createFightID() {
+		return fightCounter.getAndIncrement();
+	}
+
 
 	public synchronized void lock(){
 		this.lock.lock();
@@ -88,27 +96,41 @@ public class Cell implements Comparable<Cell>{
 
 	public void transferPlayer(Cell to){
 
+		int fightId = createFightID();
+		System.err.println("Encounter" + fightId + " || TRANSFER BETWEEN " + this + " AND " + to);
+
 		//TODO try locks
 		if(this.compareTo(to) > 0){
 			lock.lock();
-			System.err.println("Locked " + this);
+			System.err.println("Encounter" + fightId + " || locked " + this);
 			to.lock();
-			System.err.println("Locked " + to);
+			System.err.println("Encounter" +  fightId+ " || locked " + to);
 		}else{
 			to.lock();
-			System.err.println("Locked " + to);
+			System.err.println("Encounter" +  fightId + " || locked " + to);
 			lock.lock();
-			System.err.println("Locked " + this);
+			System.err.println("Encounter" + fightId + " || locked " + this);
 		}
 
 		//TODO locks com sucesso vou fazer disputa
 		Player fromPlayer = this.getPlayer();
 
 		if(to.isObstacle()){
+			if(this.compareTo(to) > 0){
+				lock.unlock();
+				System.err.println("Encounter" + fightId + " || Unlocked " + this);
+				to.unlock();
+				System.err.println("Encounter" + fightId + " || Unlocked " + to);
+			}else{
+				to.unlock();
+				System.err.println("Encounter" + fightId + " || Unlocked " + to);
+				lock.unlock();
+				System.err.println("Encounter" + fightId + " || Unlocked " + this);
+			}
 			return;
 		}
 		if(to.isOcupied()){
-			System.err.println(this.player.toString() + " is going to fight " + to.getPlayer().toString()); //TODO Debug
+			System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
 			to.fight(fromPlayer);
 		}
 		// Não tem player, então é só mover!
@@ -120,14 +142,14 @@ public class Cell implements Comparable<Cell>{
 		//TODO Acabou a disputa, dar unlock
 		if(this.compareTo(to) > 0){
 			lock.unlock();
-			System.err.println("Unlocked " + this);
+			System.err.println("Encounter" + fightId + " || Unlocked " + this);
 			to.unlock();
-			System.err.println("Unlocked " + to);
+			System.err.println("Encounter" + fightId + " || Unlocked " + to);
 		}else{
 			to.unlock();
-			System.err.println("Unlocked " + to);
+			System.err.println("Encounter" + fightId + " || Unlocked " + to);
 			lock.unlock();
-			System.err.println("Unlocked " + this);
+			System.err.println("Encounter" + fightId + " || Unlocked " + this);
 		}
 
 	}
