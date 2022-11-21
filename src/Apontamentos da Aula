@@ -42,3 +42,6 @@ Problemas possiveis
     - Se um player (1,0) decidir lutar contra o player (2,0) mas este segundo decidir durante a fight? O que acontece?
     Ou seja, como bloqueio a thread para que fique na fight e só depois é que pode mexer? Barreira? CountDownLatch?
     - O movimento dos players nao pode ser usado o setPlayer()!
+    - Possiveis deadlocks, acho que e o removePlayer quando se esta a mover quando avisa aquele que quer fazer setPlayer
+    - Deadlock quando se mexem um contra o outro? Um tenta fazer lock mas nao obteve o lock da outra. Situacao do jantar
+     de filosofos!

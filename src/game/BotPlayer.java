@@ -33,21 +33,9 @@ public class BotPlayer extends Player{
 		if(Coordinate.isValid(newCoordinate)){
 			Cell newCell = game.getCell(newCoordinate);
 
-			System.err.println(super.toString() + " moving to... " + newCell.getPosition());
+			//System.err.println(super.toString() + " moving to... " + newCell.getPosition());
+			currentCell.transferPlayer(newCell);
 
-			//TODO Comportamento para obstaculos
-			if(newCell.isObstacle()){
-				System.err.println(super.toString() + " tried to move to [OBSTACLE]");
-				return;
-			}
-			//TODO Se a posicao ja estiver ocupada chamar um metodo de fight?
-			if(newCell.isOcupied()){
-				newCell.fight(this);
-				game.notifyChange();
-				return;
-			}
-			currentCell.removePlayer();
-			newCell.setPlayer(this, true);
 			game.notifyChange();
 		}
 	}
