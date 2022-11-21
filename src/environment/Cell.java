@@ -14,6 +14,7 @@ public class Cell implements Comparable<Cell>{
 	private Coordinate position;
 	private Game game;
 	private Lock lock = new ReentrantLock();
+	public Lock moveLock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
 	private static AtomicInteger idCounter = new AtomicInteger();
 
@@ -40,15 +41,6 @@ public class Cell implements Comparable<Cell>{
 
 	private int createFightID() {
 		return fightCounter.getAndIncrement();
-	}
-
-
-	public synchronized void lock(){
-		this.lock.lock();
-	}
-
-	public synchronized void unlock(){
-		this.lock.unlock();
 	}
 
 	/**
@@ -101,54 +93,42 @@ public class Cell implements Comparable<Cell>{
 
 		//TODO try locks
 		if(this.compareTo(to) > 0){
-			lock.lock();
+			this.moveLock.lock();
 			System.err.println("Encounter" + fightId + " || locked " + this);
-			to.lock();
+			to.moveLock.lock();
 			System.err.println("Encounter" +  fightId+ " || locked " + to);
 		}else{
-			to.lock();
+			to.moveLock.lock();
 			System.err.println("Encounter" +  fightId + " || locked " + to);
-			lock.lock();
+			this.moveLock.lock();
 			System.err.println("Encounter" + fightId + " || locked " + this);
 		}
 
 		//TODO locks com sucesso vou fazer disputa
 		Player fromPlayer = this.getPlayer();
 
-		if(to.isObstacle()){
-			if(this.compareTo(to) > 0){
-				lock.unlock();
-				System.err.println("Encounter" + fightId + " || Unlocked " + this);
-				to.unlock();
-				System.err.println("Encounter" + fightId + " || Unlocked " + to);
-			}else{
-				to.unlock();
-				System.err.println("Encounter" + fightId + " || Unlocked " + to);
-				lock.unlock();
-				System.err.println("Encounter" + fightId + " || Unlocked " + this);
-			}
-			return;
-		}
 		if(to.isOcupied()){
 			System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
 			to.fight(fromPlayer);
-		}
+			if(to.isObstacle()){
+
+			}
 		// Não tem player, então é só mover!
-		else {
+		}else {
 			this.removePlayer();
 			to.setPlayerTransfer(fromPlayer);
 		}
 
 		//TODO Acabou a disputa, dar unlock
 		if(this.compareTo(to) > 0){
-			lock.unlock();
+			this.moveLock.unlock();
 			System.err.println("Encounter" + fightId + " || Unlocked " + this);
-			to.unlock();
+			to.moveLock.unlock();
 			System.err.println("Encounter" + fightId + " || Unlocked " + to);
 		}else{
-			to.unlock();
+			to.moveLock.unlock();
 			System.err.println("Encounter" + fightId + " || Unlocked " + to);
-			lock.unlock();
+			this.moveLock.unlock();
 			System.err.println("Encounter" + fightId + " || Unlocked " + this);
 		}
 
