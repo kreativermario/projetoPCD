@@ -1,6 +1,5 @@
 package environment;
 
-import coordination.CellSemaphore;
 import game.Game;
 import game.Player;
 
@@ -108,10 +107,9 @@ public class Cell implements Comparable<Cell>{
 		Player fromPlayer = this.getPlayer();
 
 		if(to.isOcupied()){
-			System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
-			to.fight(fromPlayer);
-			if(to.isObstacle()){
-
+			if(!to.isObstacle()){
+				System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
+				to.fight(fromPlayer);
 			}
 		// Não tem player, então é só mover!
 		}else {
@@ -137,9 +135,10 @@ public class Cell implements Comparable<Cell>{
 
 	/**
 	 * Metodo que trata a disputa entre dois players
+	 *
 	 * @param opponent
 	 */
-	private Player fight(Player opponent){
+	private void fight(Player opponent){
 
 		int thisPlayerStrength = this.player.getCurrentStrength();
 		int otherPlayerStrength = opponent.getCurrentStrength();
@@ -155,14 +154,12 @@ public class Cell implements Comparable<Cell>{
 					System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 					opponent.getCurrentCell().setObstacle(true);
 					opponent.interrupt();
-					return this.player;
 				}
 				case 1 -> {
 					opponent.addStrength(thisPlayerStrength);
 					System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 					this.setObstacle(true);
 					this.player.interrupt();
-					return opponent;
 				}
 			}
 
@@ -172,18 +169,15 @@ public class Cell implements Comparable<Cell>{
 			System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 			opponent.getCurrentCell().setObstacle(true);
 			opponent.interrupt();
-			return this.player;
 
-		// O outro player ganha ao player que esta nesta celula
+			// O outro player ganha ao player que esta nesta celula
 		} else {
 			opponent.addStrength(this.player.getCurrentStrength());
 			System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 			this.setObstacle(true);
 			this.player.interrupt();
-			return opponent;
 		}
 		//Caso houve problema
-		return null;
 
 	}
 
