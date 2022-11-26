@@ -2,7 +2,6 @@ package game;
 
 
 
-import coordination.CellSemaphore;
 import environment.Cell;
 import environment.Direction;
 

@@ -1,11 +1,11 @@
 package game;
 
 
+import coordination.FinishCountDownLatch;
 import environment.Cell;
 import environment.Coordinate;
 import java.util.Observable;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Classe principal que processa o jogo
@@ -24,7 +24,7 @@ public class Game extends Observable {
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
 
-	public static CountDownLatch countDownLatch = new CountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
+	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 	protected Cell[][] board;
 
 	/**
