@@ -78,10 +78,15 @@ public class Cell implements Comparable<Cell>{
 	 * @return player
 	 */
 	public Player getPlayer() {
-		return player;
+		//TODO Rever!
+		lock.lock();
+		Player returnPlayer = this.player;
+		lock.unlock();
+		return returnPlayer;
 	}
 
-	public void setPlayerTransfer(Player player){
+
+	private void setPlayerTransfer(Player player){
 		this.player = player;
 	}
 

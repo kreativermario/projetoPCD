@@ -5,15 +5,16 @@ import environment.Cell;
 import environment.Coordinate;
 import java.util.Observable;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Classe principal que processa o jogo
  */
 public class Game extends Observable {
 
-	public static final int DIMY = 4;
-	public static final int DIMX = 4;
-	private static final int NUM_PLAYERS = 9; //TODO era 90 players
+	public static final int DIMY = 10;
+	public static final int DIMX = 10;
+	private static final int NUM_PLAYERS = 70; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
@@ -22,6 +23,8 @@ public class Game extends Observable {
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
+
+	public static CountDownLatch countDownLatch = new CountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 	protected Cell[][] board;
 
 	/**
@@ -35,6 +38,30 @@ public class Game extends Observable {
 				board[x][y] = new Cell(new Coordinate(x, y),this);
 		// Adiciona bots ao jogo
 		addBotsToGame();
+
+		Thread endGame =  new Thread() {
+			@Override
+			public void run(){
+				try {
+					countDownLatch.await();
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+				//TODO matar threads e terminar jogo
+				for (int x = 0; x < Game.DIMX; x++) {
+					for (int y = 0; y < Game.DIMY; y++) {
+						Cell cell = board[x][y];
+						//TODO ter atencao sincronizacao etc! Dar lock!
+						if(cell.isOcupied() && !cell.isObstacle()){
+							cell.getPlayer().interrupt();
+						}
+					}
+				}
+				//TODO O que fazer quando acabar
+				System.err.println("GAME FINISHED!");
+			}
+		};
+		endGame.start();
 		//TODO Server
 		//this.server = new Server(this);
 		//server.runServer();

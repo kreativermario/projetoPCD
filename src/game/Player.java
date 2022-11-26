@@ -79,7 +79,6 @@ public abstract class Player extends Thread{
 		} catch (InterruptedException e) {
 			System.err.println("Thread: " + super.threadId() + ";  Player " + getIdentification() + " INTERRUPTED!");
 			System.err.println("Player " + getIdentification()  + " -> Finished the game!");
-			return;
 		}
 	}
 
@@ -101,9 +100,9 @@ public abstract class Player extends Thread{
 			//TODO Finish game
 			this.currentStrength = 10;
 			game.notifyChange();
-			//TODO Mata a thread para nao mexer mais!
 			this.interrupt();
 			System.out.println("Player " + getIdentification()  + " -> Finished the game!");
+			Game.countDownLatch.countDown();
 			return;
 		}
 		this.currentStrength += strength;
