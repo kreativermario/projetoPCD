@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Cell implements Comparable<Cell>{
 	private Coordinate position;
 	private Game game;
-	private Lock lock = new ReentrantLock();
+	public Lock lock = new ReentrantLock();
 	public Lock moveLock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
 	private static AtomicInteger idCounter = new AtomicInteger();
@@ -64,7 +64,10 @@ public class Cell implements Comparable<Cell>{
 	 * @return
 	 */
 	public boolean isObstacle(){
-		return isObstacle;
+		lock.lock();
+		boolean result = isObstacle;
+		lock.unlock();
+		return result;
 	}
 
 	public synchronized void setObstacle(boolean isObstacle){
@@ -112,6 +115,17 @@ public class Cell implements Comparable<Cell>{
 		Player fromPlayer = this.getPlayer();
 
 		if(to.isOcupied()){
+			//TODO thread player fica à espera que alguem o desbloqueie!
+			if(to.isObstacle){
+				try {
+					System.out.println("BLOCKED! WAITING 2 SECS [!!!OBSTACLE!!!]");
+					Thread.sleep(Game.MAX_WAITING_TIME_FOR_MOVE);
+				} catch (InterruptedException e) {
+					//TODO Thread autonoma faz interrupt entao e para mover outra vez
+					//sai do if e faz unlock dos locks
+				}
+			}
+
 			if(!to.isObstacle()){
 				System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
 				to.fight(fromPlayer);
