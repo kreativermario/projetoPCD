@@ -11,6 +11,7 @@ public class RemoteClient {
     private Socket socket;
     private ObjectInputStream input;
     private PrintWriter output;
+    private GameGuiMain clientGUI;
 
     private String hostName;
     public static final int PORT = 2022;
@@ -54,9 +55,7 @@ public class RemoteClient {
         System.out.println("Client processing connection...");
         while(true){
             try {
-                Message message = (Message) input.readObject();
-                System.out.println("Message -> " + message);
-                Game game = message.getGame();
+                Game game = (Game) input.readObject();
                 ClientGUI clientGuiMain = new ClientGUI(game);
                 clientGuiMain.init();
                 break;

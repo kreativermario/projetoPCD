@@ -78,7 +78,7 @@ public class Server{
             player.start();
             System.out.println("Successful connection, starting proccessing...");
             while(true){
-                Message gameStatus = new Message(game);
+
                 System.out.println("Sending message to client...");
                 output.writeObject(game);
                 System.out.println("Sent message to client...");
