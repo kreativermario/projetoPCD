@@ -1,20 +1,18 @@
-/*
+
 package game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server extends Thread {
 
     private ServerSocket server;
     protected  Game game;
     public static final int PORT = 2022;
 
     public Server(Game game) {
+        System.err.println("Server created!");
         this.game = game;
         try{
             server = new ServerSocket(PORT); // Throws IOException
@@ -24,8 +22,8 @@ public class Server {
         }
     }
 
-
-    public void runServer(){
+    @Override
+    public void run() {
         while (true){
             try {
                 waitForConnection();
@@ -42,17 +40,14 @@ public class Server {
         connectionHandler.start();
     }
 
-    */
-/**
-     * Classe que trata das conexões dos vários clientes, é a thread que trata
-     *//*
 
+    //Classe que trata das conexões dos vários clientes, é a thread que trata
     public class ConnectionHandler extends Thread{
 
         // O que é necessário para ligar um cliente
         private Socket connection;
         private BufferedReader input;
-        private PrintWriter output;
+        private ObjectOutputStream output;
 
         public ConnectionHandler(Socket connection){
             this.connection = connection;
@@ -73,7 +68,7 @@ public class Server {
 
         public void getStreams() throws IOException{
             //TODO Autoflush, quando escrevo algo, manda logo
-            output = new PrintWriter(connection.getOutputStream(), true);
+            output = new ObjectOutputStream(connection.getOutputStream());
 
             input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
@@ -82,31 +77,24 @@ public class Server {
         public void proccessConnection() throws IOException{
             System.out.println("Successful connection, starting proccessing...");
             Player player = new HumanPlayer(game);
-
-            try {
-                game.addPlayerToGame(player);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            player.start();
 
             while(true){
                 String message = input.readLine();
+                if(message != null){
+                    //TODO do movement!
 
-                if("FIM".equals(message)) break;
+                }
+                output.writeObject(game);
 
-                System.out.println("ECHO: " + message);
-
-                output.println("Echo: " + message);
+                //output.println("Echo: " + message);
             }
         }
 
         public void closeConnection() {
-            */
-/**
-             * Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
-             * RESOURCE LEAK! Teria que fazer try catch para cada um.
-             *//*
 
+             /*Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
+            RESOURCE LEAK! Teria que fazer try catch para cada um.*/
             try{
                 input.close();
                 output.close();
@@ -114,13 +102,10 @@ public class Server {
             }catch (IOException e){
                 e.printStackTrace();
             }
-
         }
-
-
 
     }
 
 
 }
-*/
+

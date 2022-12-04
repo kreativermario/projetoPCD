@@ -63,12 +63,12 @@ public class Game extends Observable {
 			}
 		};
 		endGame.start();
-		TestThread testThread = new TestThread(this);
-		testThread.start();
-		//TODO Server
-		//this.server = new Server(this);
-		//server.runServer();
+		//TODO Debug morte
+//		TestThread testThread = new TestThread(this);
+//		testThread.start();
 
+		Server server = new Server(this);
+		server.start();
 	}
 
 	/**

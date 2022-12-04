@@ -3,6 +3,7 @@ package gui;
 import java.util.Observable;
 import java.util.Observer;
 import game.Game;
+import game.Server;
 
 import javax.swing.JFrame;
 
@@ -15,10 +16,18 @@ public class GameGuiMain implements Observer {
 		super();
 		game = new Game();
 		game.addObserver(this);
-
 		buildGui();
-
 	}
+
+	//Construtor para GUI Clientes
+	public GameGuiMain(Game game) {
+		super();
+		this.game = game;
+		game.addObserver(this);
+		buildGui();
+	}
+
+
 
 	private void buildGui() {
 		boardGui = new BoardJComponent(game);
@@ -40,19 +49,11 @@ public class GameGuiMain implements Observer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		game.addPlayerToGame(new PhoneyHumanPlayer(1, game, (byte)3));
-//		game.addPlayerToGame(new PhoneyHumanPlayer(2, game, (byte)2));
-//		game.addPlayerToGame(new PhoneyHumanPlayer(3, game, (byte)1));
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		boardGui.repaint();
-	}
-
-	public static void main(String[] args) {
-		GameGuiMain game = new GameGuiMain();
-		game.init();
 	}
 
 }

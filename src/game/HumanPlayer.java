@@ -1,4 +1,3 @@
-/*
 package game;
 
 import environment.Cell;
@@ -11,11 +10,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-*/
-/**
- *
- *//*
-
 public class HumanPlayer extends Player{
 
     private static AtomicInteger idCounter = new AtomicInteger();
@@ -25,11 +19,11 @@ public class HumanPlayer extends Player{
         System.err.println("Created Human " + super.toString());
     }
 
-    */
-/**
+
+    /**
      * Cria um id do Jogador único
      * @return
-     *//*
+     */
 
     private static int createID() {
         return idCounter.getAndIncrement();
@@ -39,15 +33,15 @@ public class HumanPlayer extends Player{
     public void run() {
         //Iniciar a posição
         super.initializeLocation();
-       */
-/* try{
+
+        try{
             while(true){
-                //Mover
-                move();
+                //TODO Alterar
+                move(Direction.DOWN);
             }
         }catch ( InterruptedException e){
             e.printStackTrace();
-        }*//*
+        }
 
 
     }
@@ -61,4 +55,4 @@ public class HumanPlayer extends Player{
         return true;
     }
 }
-*/
+

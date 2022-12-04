@@ -1,16 +1,14 @@
-/*
 package game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import gui.GameGuiMain;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
 public class RemoteClient {
     private Socket socket;
-    private BufferedReader input;
+    private ObjectInputStream input;
     private PrintWriter output;
 
     private String hostName;
@@ -37,6 +35,7 @@ public class RemoteClient {
     public void connectToServer(){
         try {
             socket = new Socket(InetAddress.getByName(hostName), 2022);
+            System.err.println("Client " + hostName + " CONNECTED TO SERVER!");
         } catch (IOException e) {
             System.err.println("Client " + hostName + " error connecting... exiting");
             System.exit(1);
@@ -46,32 +45,22 @@ public class RemoteClient {
     public void getStreams() throws IOException{
         //TODO Autoflush, quando escrevo algo, manda logo
         output = new PrintWriter(socket.getOutputStream(), true);
+        input = new ObjectInputStream(socket.getInputStream());
 
-        input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     public void proccessConnection() throws IOException {
-        for(int i = 0; i < 10; i++){
-            output.println("Ola " + i);
 
-            String message = input.readLine();
-            System.out.println(message);
-
-            try{
-                Thread.sleep(3000);
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }
+        try {
+            Game game = (Game) input.readObject();
+            GameGuiMain clientGuiMain = new GameGuiMain(game);
+            clientGuiMain.init();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        output.println("FIM");
     }
 
     public void closeConnection(){
-        */
-/**
-         * Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
-         * RESOURCE LEAK! Teria que fazer try catch para cada um.
-         *//*
 
         try{
             input.close();
@@ -82,5 +71,10 @@ public class RemoteClient {
         }
     }
 
+    public static void main(String[] args) {
+        RemoteClient remoteClient = new RemoteClient("localHost");
+        remoteClient.runClient();
+    }
+
 }
-*/
+
