@@ -1,5 +1,6 @@
 package environment;
 
+import coordination.AutonomousThread;
 import game.Game;
 import game.Player;
 
@@ -116,14 +117,19 @@ public class Cell implements Comparable<Cell>{
 
 		if(to.isOcupied()){
 			//TODO thread player fica à espera que alguem o desbloqueie!
-			if(to.isObstacle){
-				try {
-					System.out.println("BLOCKED! WAITING 2 SECS [!!!OBSTACLE!!!]");
-					Thread.sleep(Game.MAX_WAITING_TIME_FOR_MOVE);
-				} catch (InterruptedException e) {
-					//TODO Thread autonoma faz interrupt entao e para mover outra vez
-					//sai do if e faz unlock dos locks
+
+			while(to.isObstacle){
+				synchronized (this){
+					try {
+						AutonomousThread autonomousThread = new AutonomousThread(Thread.currentThread());
+						autonomousThread.start();
+						wait();
+					} catch (InterruptedException e) {
+						return;
+					}
 				}
+
+
 			}
 
 			if(!to.isObstacle()){
