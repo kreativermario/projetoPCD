@@ -66,12 +66,16 @@ public class Cell implements Comparable<Cell>{
 	 */
 	public boolean isObstacle(){
 		lock.lock();
-		boolean result = isObstacle;
-		lock.unlock();
+		boolean result;
+		try{
+			result= isObstacle;
+		}finally {
+			lock.unlock();
+		}
 		return result;
 	}
 
-	public synchronized void setObstacle(boolean isObstacle){
+	private void setObstacle(boolean isObstacle){
 		this.player.setObstacle();
 		this.isObstacle = isObstacle;
 	}
@@ -121,15 +125,23 @@ public class Cell implements Comparable<Cell>{
 			while(to.isObstacle){
 				synchronized (this){
 					try {
-						AutonomousThread autonomousThread = new AutonomousThread(Thread.currentThread());
-						autonomousThread.start();
+						new AutonomousThread(Thread.currentThread()).start();
 						wait();
 					} catch (InterruptedException e) {
+						if(this.compareTo(to) > 0){
+							this.moveLock.unlock();
+							System.err.println("Encounter" + fightId + " || Unlocked " + this);
+							to.moveLock.unlock();
+							System.err.println("Encounter" + fightId + " || Unlocked " + to);
+						}else{
+							to.moveLock.unlock();
+							System.err.println("Encounter" + fightId + " || Unlocked " + to);
+							this.moveLock.unlock();
+							System.err.println("Encounter" + fightId + " || Unlocked " + this);
+						}
 						return;
 					}
 				}
-
-
 			}
 
 			if(!to.isObstacle()){
@@ -213,6 +225,15 @@ public class Cell implements Comparable<Cell>{
 		lock.lock();
 		try{
 			while(this.player != null){
+				// Se a celula gerada for um player morto, tentar fazer spawn outra vez
+				while(isObstacle()) {
+					synchronized (this) {
+						System.err.println(player + " TENTOU SPAWNAR EM CIMA DE UM DEAD PLAYER");
+						wait(Game.MAX_WAITING_TIME_FOR_MOVE);
+						game.addPlayerToGame(player);
+					}
+				}
+
 				System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT " + getPosition()
 						+ " || Player " + this.player.getIdentification() + " ALREADY THERE!!");
 				isFull.await();

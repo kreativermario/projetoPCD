@@ -2,6 +2,7 @@ package game;
 
 
 import coordination.FinishCountDownLatch;
+import coordination.TestThread;
 import environment.Cell;
 import environment.Coordinate;
 import java.util.Observable;
@@ -12,9 +13,9 @@ import java.util.Random;
  */
 public class Game extends Observable {
 
-	public static final int DIMY = 10;
-	public static final int DIMX = 10;
-	private static final int NUM_PLAYERS = 15; //TODO era 90 players
+	public static final int DIMY = 5;
+	public static final int DIMX = 5;
+	private static final int NUM_PLAYERS = 3; //TODO era 90 players
 
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 
@@ -62,6 +63,8 @@ public class Game extends Observable {
 			}
 		};
 		endGame.start();
+		TestThread testThread = new TestThread(this);
+		testThread.start();
 		//TODO Server
 		//this.server = new Server(this);
 		//server.runServer();
@@ -106,12 +109,6 @@ public class Game extends Observable {
 	public void addPlayerToGame(Player player) throws InterruptedException{
 		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
 		Cell initCell = getCell(initCoordinate);
-		// Se a celula gerada for um player morto, tentar fazer spawn outra vez
-		if(initCell.isObstacle()){
-			System.err.println(player + " TENTOU SPAWNAR EM CIMA DE UM DEAD PLAYER");
-			Thread.sleep(MAX_WAITING_TIME_FOR_MOVE);
-			addPlayerToGame(player);
-		}
 		initCell.setPlayer(player);
 	}
 
