@@ -2,7 +2,6 @@ package game;
 
 
 import coordination.FinishCountDownLatch;
-import coordination.TestThread;
 import environment.Cell;
 import environment.Coordinate;
 import java.util.Observable;
@@ -11,7 +10,7 @@ import java.util.Random;
 /**
  * Classe principal que processa o jogo
  */
-public class Game extends Observable{
+public class Game extends Observable {
 
 	public static final int DIMY = 5;
 	public static final int DIMX = 5;

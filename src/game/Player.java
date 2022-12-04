@@ -4,9 +4,6 @@ package game;
 
 import environment.Cell;
 import environment.Direction;
-
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -15,7 +12,7 @@ import java.util.Random;
  * @author luismota
  *
  */
-public abstract class Player extends Thread{
+public abstract class Player extends Thread {
 
 
 	protected  Game game;
