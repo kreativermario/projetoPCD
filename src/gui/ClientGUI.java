@@ -1,24 +1,24 @@
 package gui;
 
+import game.Game;
+import game.RemoteClient;
+
+import javax.swing.*;
 import java.util.Observable;
 import java.util.Observer;
-import game.Game;
-import game.Server;
 
-import javax.swing.JFrame;
-
-public class GameGuiMain implements Observer {
-	private JFrame frame = new JFrame("pcd.io");
+public class ClientGUI implements Observer {
+	private JFrame frame = new JFrame("client");
 	private BoardJComponent boardGui;
 	private Game game;
 
-	public GameGuiMain() {
+	//Construtor para GUI Clientes
+	public ClientGUI(Game game) {
 		super();
-		game = new Game();
+		this.game = game;
 		game.addObserver(this);
 		buildGui();
 	}
-
 
 	private void buildGui() {
 		boardGui = new BoardJComponent(game);

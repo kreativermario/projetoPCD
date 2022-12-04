@@ -1,3 +1,4 @@
+import gui.ClientGUI;
 import gui.GameGuiMain;
 
 public class runProgram {

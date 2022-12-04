@@ -1,5 +1,6 @@
 package game;
 
+import gui.ClientGUI;
 import gui.GameGuiMain;
 
 import java.io.*;
@@ -53,7 +54,7 @@ public class RemoteClient {
 
         try {
             Game game = (Game) input.readObject();
-            GameGuiMain clientGuiMain = new GameGuiMain(game);
+            ClientGUI clientGuiMain = new ClientGUI(game);
             clientGuiMain.init();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -69,11 +70,6 @@ public class RemoteClient {
         }catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        RemoteClient remoteClient = new RemoteClient("localHost");
-        remoteClient.runClient();
     }
 
 }
