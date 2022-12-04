@@ -5,15 +5,15 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server extends Thread {
+public class Server{
 
     private ServerSocket server;
     protected  Game game;
     public static final int PORT = 2022;
 
-    public Server(Game game) {
+    public Server() {
         System.err.println("Server created!");
-        this.game = game;
+        this.game = new Game();
         try{
             server = new ServerSocket(PORT); // Throws IOException
         }catch (IOException e){
@@ -22,8 +22,7 @@ public class Server extends Thread {
         }
     }
 
-    @Override
-    public void run() {
+    public void runServer() {
         while (true){
             try {
                 waitForConnection();
@@ -75,17 +74,15 @@ public class Server extends Thread {
         }
 
         public void proccessConnection() throws IOException{
-            System.out.println("Successful connection, starting proccessing...");
             Player player = new HumanPlayer(game);
             player.start();
-
+            System.out.println("Successful connection, starting proccessing...");
             while(true){
-                String message = input.readLine();
-                if(message != null){
-                    //TODO do movement!
-
-                }
+                Message gameStatus = new Message(game);
+                System.out.println("Sending message to client...");
                 output.writeObject(game);
+                System.out.println("Sent message to client...");
+                output.flush();
 
                 //output.println("Echo: " + message);
             }

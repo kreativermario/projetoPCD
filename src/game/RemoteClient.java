@@ -51,14 +51,20 @@ public class RemoteClient {
     }
 
     public void proccessConnection() throws IOException {
-
-        try {
-            Game game = (Game) input.readObject();
-            ClientGUI clientGuiMain = new ClientGUI(game);
-            clientGuiMain.init();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        System.out.println("Client processing connection...");
+        while(true){
+            try {
+                Message message = (Message) input.readObject();
+                System.out.println("Message -> " + message);
+                Game game = message.getGame();
+                ClientGUI clientGuiMain = new ClientGUI(game);
+                clientGuiMain.init();
+                break;
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
+
     }
 
     public void closeConnection(){
@@ -70,6 +76,11 @@ public class RemoteClient {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        RemoteClient client = new RemoteClient("localHost");
+        client.runClient();
     }
 
 }

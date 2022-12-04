@@ -11,7 +11,7 @@ import java.util.Random;
 /**
  * Classe principal que processa o jogo
  */
-public class Game extends Observable {
+public class Game extends Observable{
 
 	public static final int DIMY = 5;
 	public static final int DIMX = 5;
@@ -67,8 +67,6 @@ public class Game extends Observable {
 //		TestThread testThread = new TestThread(this);
 //		testThread.start();
 
-		Server server = new Server(this);
-		server.start();
 	}
 
 	/**

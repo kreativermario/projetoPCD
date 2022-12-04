@@ -3,14 +3,13 @@ package environment;
 import coordination.AutonomousThread;
 import game.Game;
 import game.Player;
-
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class Cell implements Comparable<Cell>{
+public class Cell implements Comparable<Cell> {
 	private Coordinate position;
 	private Game game;
 	public Lock lock = new ReentrantLock();

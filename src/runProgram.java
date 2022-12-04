@@ -1,11 +1,13 @@
+import game.RemoteClient;
+import game.Server;
 import gui.ClientGUI;
 import gui.GameGuiMain;
 
 public class runProgram {
 
     public static void main(String[] args) {
-        GameGuiMain game = new GameGuiMain();
-        game.init();
+        Server server = new Server();
+        server.runServer();
     }
 
 }
