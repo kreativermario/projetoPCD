@@ -4,7 +4,7 @@ import game.Game;
 
 import java.io.Serializable;
 
-public class Coordinate{
+public class Coordinate implements Serializable{
 	public final int x;
 	public final int y;
 

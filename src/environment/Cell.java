@@ -11,7 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class Cell implements Comparable<Cell>{
+public class Cell implements Comparable<Cell>, Serializable{
 	private Coordinate position;
 	private Game game;
 	public Lock lock = new ReentrantLock();
@@ -121,9 +121,8 @@ public class Cell implements Comparable<Cell>{
 		Player fromPlayer = this.getPlayer();
 
 		if(to.isOcupied()){
-			//TODO thread player fica à espera que alguem o desbloqueie!
-
-			while(to.isObstacle){
+			//TODO thread player automatico fica à espera que alguem o desbloqueie!
+			while(to.isObstacle && !fromPlayer.isHumanPlayer()){
 				synchronized (this){
 					try {
 						new AutonomousThread(Thread.currentThread()).start();

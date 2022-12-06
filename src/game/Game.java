@@ -4,13 +4,15 @@ package game;
 import coordination.FinishCountDownLatch;
 import environment.Cell;
 import environment.Coordinate;
+
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Random;
 
 /**
  * Classe principal que processa o jogo
  */
-public class Game extends Observable {
+public class Game extends Observable implements Serializable {
 
 	public static final int DIMY = 5;
 	public static final int DIMX = 5;

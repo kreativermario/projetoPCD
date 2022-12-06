@@ -4,6 +4,8 @@ package game;
 
 import environment.Cell;
 import environment.Direction;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
@@ -12,7 +14,7 @@ import java.util.Random;
  * @author luismota
  *
  */
-public abstract class Player extends Thread {
+public abstract class Player extends Thread implements Serializable {
 
 
 	protected  Game game;

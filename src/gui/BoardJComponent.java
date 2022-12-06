@@ -31,11 +31,33 @@ public class BoardJComponent extends JComponent implements KeyListener {
 	private Image obstacleImage = new ImageIcon("obstacle.png").getImage();
 	private Image humanPlayerImage= new ImageIcon("abstract-user-flat.png").getImage();
 	private Direction lastPressedDirection=null;
+	private boolean customKeys;
+	private int LEFT;
+	private int RIGHT;
+	private int UP;
+	private int DOWN;
+
 	
 	public BoardJComponent(Game game) {
 		this.game = game;
+		this.customKeys = false;
 		setFocusable(true);
 		addKeyListener(this);
+	}
+
+	public BoardJComponent(Game game, int LEFT, int RIGHT, int UP, int DOWN){
+		this.game = game;
+		this.customKeys = true;
+		this.LEFT = LEFT;
+		this.RIGHT = RIGHT;
+		this.UP = UP;
+		this.DOWN = DOWN;
+		setFocusable(true);
+		addKeyListener(this);
+	}
+
+	public void setGame(Game game){
+		this.game = game;
 	}
 
 	@Override
@@ -92,20 +114,28 @@ public class BoardJComponent extends JComponent implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch(e.getKeyCode()){
-		case KeyEvent.VK_LEFT :
-			lastPressedDirection=environment.Direction.LEFT;
-			break;
-		case KeyEvent.VK_RIGHT:
-			lastPressedDirection=environment.Direction.RIGHT;
-			break;
-		case KeyEvent.VK_UP:
-			lastPressedDirection=environment.Direction.UP;
-			break;
-		case KeyEvent.VK_DOWN:
-			lastPressedDirection=environment.Direction.DOWN;
-			break;
-		}
+		int keyCode = e.getKeyCode();
+			if(!customKeys){
+				switch(keyCode){
+					case KeyEvent.VK_LEFT :
+						lastPressedDirection=environment.Direction.LEFT;
+						break;
+					case KeyEvent.VK_RIGHT:
+						lastPressedDirection=environment.Direction.RIGHT;
+						break;
+					case KeyEvent.VK_UP:
+						lastPressedDirection=environment.Direction.UP;
+						break;
+					case KeyEvent.VK_DOWN:
+						lastPressedDirection=environment.Direction.DOWN;
+						break;
+				}
+			}else{
+				if(keyCode == UP) lastPressedDirection=environment.Direction.UP;
+				if(keyCode == DOWN) lastPressedDirection=environment.Direction.DOWN;
+				if(keyCode == RIGHT) lastPressedDirection=environment.Direction.RIGHT;
+				if(keyCode == LEFT) lastPressedDirection=environment.Direction.LEFT;
+			}
 	}
 
 

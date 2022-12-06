@@ -1,6 +1,8 @@
 
 package game;
 
+import gui.BoardJComponent;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -57,7 +59,7 @@ public class Server{
             try {
                 getStreams();
                 proccessConnection();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 closeConnection();
@@ -73,17 +75,16 @@ public class Server{
 
         }
 
-        public void proccessConnection() throws IOException{
+        public void proccessConnection() throws IOException, InterruptedException {
             Player player = new HumanPlayer(game);
             player.start();
             System.out.println("Successful connection, starting proccessing...");
             while(true){
-
-                System.out.println("Sending message to client...");
+                sleep(Game.REFRESH_INTERVAL);
+                System.out.println("Sending board to client...");
                 output.writeObject(game);
-                System.out.println("Sent message to client...");
+                System.out.println("Sent board to client!");
                 output.flush();
-
                 //output.println("Echo: " + message);
             }
         }

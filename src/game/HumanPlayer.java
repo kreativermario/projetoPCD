@@ -1,9 +1,11 @@
 package game;
 
 import environment.Direction;
+
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HumanPlayer extends Player{
+public class HumanPlayer extends Player implements Serializable {
 
     private static AtomicInteger idCounter = new AtomicInteger();
 
