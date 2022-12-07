@@ -26,6 +26,7 @@ public abstract class Player extends Thread implements Serializable {
 	private static final List<Direction> VALUES = List.of(Direction.values());
 	private static final int SIZE = VALUES.size();
 	private static final Random RANDOM = new Random();
+	private Direction moveDirection;
 
 
 	// TODO: get player position from data in game
@@ -106,6 +107,14 @@ public abstract class Player extends Thread implements Serializable {
 		this.currentStrength += strength;
 	}
 
+	public void setMoveDirection(Direction moveDirection) {
+		this.moveDirection = moveDirection;
+	}
+
+	public Direction getMoveDirection() {
+		return moveDirection;
+	}
+
 	public abstract void move(Direction d) throws InterruptedException;
 
 	public abstract boolean isHumanPlayer();
@@ -136,6 +145,10 @@ public abstract class Player extends Thread implements Serializable {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public Game getGame() {
+		return game;
 	}
 
 	public byte getCurrentStrength() {

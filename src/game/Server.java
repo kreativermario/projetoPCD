@@ -1,13 +1,14 @@
 
 package game;
 
+import environment.Direction;
 import gui.BoardJComponent;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server{
+public class Server extends Thread{
 
     private ServerSocket server;
     protected  Game game;
@@ -22,6 +23,23 @@ public class Server{
             System.err.println("Error connecting server... aborting!");
             System.exit(1);
         }
+    }
+
+    //Server com GUI
+    public Server(Game game) {
+        System.err.println("Server created!");
+        this.game = game;
+        try{
+            server = new ServerSocket(PORT); // Throws IOException
+        }catch (IOException e){
+            System.err.println("Error connecting server... aborting!");
+            System.exit(1);
+        }
+    }
+
+    @Override
+    public void run() {
+        runServer();
     }
 
     public void runServer() {
@@ -82,10 +100,16 @@ public class Server{
             while(true){
                 sleep(Game.REFRESH_INTERVAL);
                 System.out.println("Sending board to client...");
-                output.writeObject(game);
+                output.writeObject(player);
                 System.out.println("Sent board to client!");
                 output.flush();
                 //output.println("Echo: " + message);
+                String directionReceived = input.readLine();
+                if(directionReceived != null){
+                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+                    player.setMoveDirection(Direction.valueOf(directionReceived));
+                }
+
             }
         }
 

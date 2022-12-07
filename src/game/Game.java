@@ -67,6 +67,8 @@ public class Game extends Observable implements Serializable {
 		//TODO Debug morte
 //		TestThread testThread = new TestThread(this);
 //		testThread.start();
+		Server server = new Server(this);
+		server.start();
 
 	}
 

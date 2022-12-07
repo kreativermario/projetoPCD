@@ -118,23 +118,42 @@ public class BoardJComponent extends JComponent implements KeyListener {
 			if(!customKeys){
 				switch(keyCode){
 					case KeyEvent.VK_LEFT :
+						System.out.println("PRESSED LEFT");
 						lastPressedDirection=environment.Direction.LEFT;
 						break;
 					case KeyEvent.VK_RIGHT:
+						System.out.println("PRESSED RIGHT");
 						lastPressedDirection=environment.Direction.RIGHT;
 						break;
 					case KeyEvent.VK_UP:
+						System.out.println("PRESSED UP");
 						lastPressedDirection=environment.Direction.UP;
 						break;
 					case KeyEvent.VK_DOWN:
+						System.out.println("PRESSED DOWN");
 						lastPressedDirection=environment.Direction.DOWN;
 						break;
 				}
 			}else{
-				if(keyCode == UP) lastPressedDirection=environment.Direction.UP;
-				if(keyCode == DOWN) lastPressedDirection=environment.Direction.DOWN;
-				if(keyCode == RIGHT) lastPressedDirection=environment.Direction.RIGHT;
-				if(keyCode == LEFT) lastPressedDirection=environment.Direction.LEFT;
+				if(keyCode == UP){
+					System.out.println("PRESSED UP");
+					lastPressedDirection=environment.Direction.UP;
+					return;
+				}
+				if(keyCode == DOWN){
+					System.out.println("PRESSED DOWN");
+					lastPressedDirection=environment.Direction.DOWN;
+					return;
+				}
+				if(keyCode == RIGHT){
+					System.out.println("PRESSED RIGHT");
+					lastPressedDirection=environment.Direction.RIGHT;
+					return;
+				}
+				if(keyCode == LEFT) {
+					System.out.println("PRESSED LEFT");
+					lastPressedDirection=environment.Direction.LEFT;
+				}
 			}
 	}
 

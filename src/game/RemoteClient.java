@@ -1,26 +1,29 @@
 package game;
 
+import environment.Cell;
+import environment.Direction;
 import gui.BoardJComponent;
+import gui.GameGuiMain;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import javax.swing.*;
 import java.net.UnknownHostException;
-import java.util.Observable;
-import java.util.Observer;
+
+import static java.lang.Thread.sleep;
 
 
-public class RemoteClient implements Observer {
-    private JFrame frame = new JFrame("client");
+public class RemoteClient{
     private InetAddress address;
-    private BoardJComponent boardGui;
     private Socket socket;
     private ObjectInputStream input;
     private PrintWriter output;
     private final int PORT;
     //TODO nao preciso de game
     private Game game;
+    private GameGuiMain clientGUI;
+    private Player clientPlayer;
+    private BoardJComponent boardJComponent;
     private int LEFT;
     private int RIGHT;
     private int UP;
@@ -33,21 +36,16 @@ public class RemoteClient implements Observer {
         //this.game = new Game();
         this.address = address;
         this.PORT = PORT;
-        //TODO receber o BOARDJCOMPONENT DO SERVER
-        runClient();
+        this.LEFT = LEFT;
+        this.RIGHT = RIGHT;
+        this.UP = UP;
+        this.DOWN = DOWN;
+        //TODO receber estado jogo do server
+        //TODO iniciar GUI
 
     }
 
-    private void buildGui() {
-        frame.add(boardGui);
-
-        frame.setSize(800,800);
-        frame.setLocation(0, 150);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
-
-    public void runClient(){
+    public void runClient() {
         try {
             connectToServer();
             getStreams();
@@ -57,7 +55,6 @@ public class RemoteClient implements Observer {
         }finally {
             closeConnection();
         }
-
     }
 
     public void connectToServer(){
@@ -72,7 +69,10 @@ public class RemoteClient implements Observer {
 
     public void getStreams() throws IOException{
         //TODO Autoflush, quando escrevo algo, manda logo
-        output = new PrintWriter(socket.getOutputStream(), true);
+        output = new PrintWriter(new BufferedWriter(
+                new OutputStreamWriter(socket.getOutputStream())),
+                true);
+        //output = new PrintWriter(socket.getOutputStream(), true);
         input = new ObjectInputStream(socket.getInputStream());
 
     }
@@ -80,17 +80,35 @@ public class RemoteClient implements Observer {
     public void proccessConnection() throws IOException {
         System.out.println("Client processing continuous connection...");
         int firstConnection = 0;
+        Direction directionPressed;
         while(true){
             try {
-                game = (Game) input.readObject();
+                //TODO receção
+                //Game receivedGame = (Game) input.readObject();
+                Player receivedPlayer = (Player) input.readObject();
                 if(firstConnection == 0){
                     firstConnection++;
-                    boardGui = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
-                    buildGui();
+                    clientPlayer = receivedPlayer;
+                    game = clientPlayer.getGame();
+                    boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
+                    clientGUI = new GameGuiMain(this, game, boardJComponent,LEFT, RIGHT, UP, DOWN);
+                    clientGUI.init();
+                }else{
+                    clientGUI.updateGameStatus(game);
+                    System.out.println("UPDATING STATUS...");
+                    //TODO envio de direcao
+                    if(boardJComponent.getLastPressedDirection() != null){
+                        directionPressed = boardJComponent.getLastPressedDirection();
+                        boardJComponent.clearLastPressedDirection();
+                        System.out.println("SENDING " + directionPressed.toString());
+                        output.println(directionPressed.toString());
+                    }
                 }
-                boardGui.setGame(game);
-                game.addObserver(this);
-                boardGui.repaint();
+//                Cell[][] receivedBoard = receivedGame.getBoard();
+//                game.updateBoard(receivedBoard);
+
+
+
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -99,8 +117,8 @@ public class RemoteClient implements Observer {
     }
 
     public void closeConnection(){
-
         try{
+            System.out.println("Closing connection...");
             input.close();
             output.close();
             socket.close();
@@ -109,14 +127,10 @@ public class RemoteClient implements Observer {
         }
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        boardGui.repaint();
-    }
-
     public static void main(String[] args) throws UnknownHostException {
         RemoteClient client = new RemoteClient(InetAddress.getByName("localHost"), 2022,
                 37, 39, 38, 40);
+        client.runClient();
         System.out.println(InetAddress.getByName("localHost"));
     }
 
