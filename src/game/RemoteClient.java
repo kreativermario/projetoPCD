@@ -93,9 +93,10 @@ public class RemoteClient{
                     boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
                     clientGUI = new GameGuiMain(game, boardJComponent,LEFT, RIGHT, UP, DOWN);
                     clientGUI.init();
+                //TODO NAO ESTA A ENTRAR NO ELSE
                 }else{
-                    clientGUI.updateGameStatus(game);
                     System.out.println("UPDATING STATUS...");
+                    clientGUI.updateGameStatus(game);
                     //TODO envio de direcao
                     if(boardJComponent.getLastPressedDirection() != null){
                         directionPressed = boardJComponent.getLastPressedDirection();

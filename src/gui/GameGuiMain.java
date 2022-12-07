@@ -36,6 +36,7 @@ public class GameGuiMain implements Observer {
 		frame.add(boardGui);
 		frame.setSize(800,800);
 		frame.setLocation(0, 150);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public void updateGameStatus(Game game){
