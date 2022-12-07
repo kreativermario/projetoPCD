@@ -49,6 +49,7 @@ public class RemoteClient{
         try {
             connectToServer();
             getStreams();
+            firstConnection();
             proccessConnection();
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,28 +78,42 @@ public class RemoteClient{
 
     }
 
+    public void firstConnection() throws IOException{
+        System.out.println("Client processing first connection...");
+        while(true){
+            try {
+                //TODO receção
+                //Game receivedGame = (Game) input.readObject();
+                Player receivedPlayer = (Player) input.readObject();
+                if(receivedPlayer != null){
+                    clientPlayer = receivedPlayer;
+                    game = clientPlayer.getGame();
+                    boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
+                    clientGUI = new GameGuiMain(game, boardJComponent,LEFT, RIGHT, UP, DOWN);
+                    clientGUI.init();
+                    break;
+                }
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
     public void proccessConnection() throws IOException {
         System.out.println("Client processing continuous connection...");
-        boolean firstConnection = false;
         Direction directionPressed;
         while(true){
             try {
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
                 Player receivedPlayer = (Player) input.readObject();
-                if(!firstConnection){
-                    firstConnection = true;
-                    clientPlayer = receivedPlayer;
-                    game = clientPlayer.getGame();
-                    boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
-                    clientGUI = new GameGuiMain(game, boardJComponent,LEFT, RIGHT, UP, DOWN);
-                    clientGUI.init();
-                //TODO NAO ESTA A ENTRAR NO ELSE
-                }else{
+                System.out.println(receivedPlayer.toString());
+                if(receivedPlayer != null){
                     System.out.println("UPDATING STATUS...");
                     clientGUI.updateGameStatus(game);
                     //TODO envio de direcao
-                    if(boardJComponent.getLastPressedDirection() != null){
+                    if(boardJComponent.getLastPressedDirection() != null) {
                         directionPressed = boardJComponent.getLastPressedDirection();
                         boardJComponent.clearLastPressedDirection();
                         System.out.println("SENDING " + directionPressed.toString());
@@ -107,9 +122,6 @@ public class RemoteClient{
                 }
 //                Cell[][] receivedBoard = receivedGame.getBoard();
 //                game.updateBoard(receivedBoard);
-
-
-
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

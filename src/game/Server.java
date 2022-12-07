@@ -3,6 +3,7 @@ package game;
 
 import environment.Direction;
 import gui.BoardJComponent;
+import gui.GameGuiMain;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -38,8 +39,10 @@ public class Server extends Thread{
     }
 
     @Override
-    public void run() {
-        runServer();
+    public void run(){
+        while(true){
+            runServer();
+        }
     }
 
     public void runServer() {
@@ -77,7 +80,7 @@ public class Server extends Thread{
             try {
                 getStreams();
                 proccessConnection();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 closeConnection();
@@ -93,24 +96,23 @@ public class Server extends Thread{
 
         }
 
-        public void proccessConnection() throws IOException, InterruptedException {
+        public void proccessConnection() throws IOException {
             Player player = new HumanPlayer(game);
             player.start();
             System.out.println("Successful connection, starting proccessing...");
-            while(true){
-                sleep(Game.REFRESH_INTERVAL);
+            do {
+                //sleep(Game.REFRESH_INTERVAL);
                 System.out.println("Sending board to client...");
                 output.writeObject(player);
                 System.out.println("Sent board to client!");
                 output.flush();
                 //output.println("Echo: " + message);
                 String directionReceived = input.readLine();
-                if(directionReceived != null){
+                if (directionReceived != null) {
                     System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
                     player.setMoveDirection(Direction.valueOf(directionReceived));
                 }
-
-            }
+            } while (true);
         }
 
         public void closeConnection() {
