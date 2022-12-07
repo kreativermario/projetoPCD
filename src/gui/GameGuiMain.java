@@ -12,7 +12,6 @@ import javax.swing.JFrame;
 
 public class GameGuiMain implements Observer {
 	private JFrame frame;
-	private RemoteClient clientConnection;
 	private BoardJComponent boardGui;
 	private Game game;
 
@@ -24,9 +23,8 @@ public class GameGuiMain implements Observer {
 		buildGui();
 	}
 
-	public GameGuiMain(RemoteClient remoteClient, Game game, BoardJComponent boardJComponent, int LEFT, int RIGHT, int UP, int DOWN) {
+	public GameGuiMain(Game game, BoardJComponent boardJComponent, int LEFT, int RIGHT, int UP, int DOWN) {
 		super();
-		this.clientConnection = remoteClient;
 		this.game = game;
 		frame = new JFrame("Cliente");
 		game.addObserver(this);
@@ -38,15 +36,6 @@ public class GameGuiMain implements Observer {
 		frame.add(boardGui);
 		frame.setSize(800,800);
 		frame.setLocation(0, 150);
-		frame.addWindowListener(new WindowAdapter()
-		{
-			@Override
-			public void windowClosing(WindowEvent e) {
-				clientConnection.closeConnection();
-				super.windowClosing(e);
-				// Do your disconnect from the DB here.
-			}
-		});
 	}
 
 	public void updateGameStatus(Game game){

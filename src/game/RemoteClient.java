@@ -79,19 +79,19 @@ public class RemoteClient{
 
     public void proccessConnection() throws IOException {
         System.out.println("Client processing continuous connection...");
-        int firstConnection = 0;
+        boolean firstConnection = false;
         Direction directionPressed;
         while(true){
             try {
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
                 Player receivedPlayer = (Player) input.readObject();
-                if(firstConnection == 0){
-                    firstConnection++;
+                if(!firstConnection){
+                    firstConnection = true;
                     clientPlayer = receivedPlayer;
                     game = clientPlayer.getGame();
                     boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
-                    clientGUI = new GameGuiMain(this, game, boardJComponent,LEFT, RIGHT, UP, DOWN);
+                    clientGUI = new GameGuiMain(game, boardJComponent,LEFT, RIGHT, UP, DOWN);
                     clientGUI.init();
                 }else{
                     clientGUI.updateGameStatus(game);
