@@ -3,6 +3,7 @@ package game;
 
 
 import environment.Cell;
+import environment.Coordinate;
 import environment.Direction;
 
 import java.io.Serializable;
@@ -68,10 +69,14 @@ public abstract class Player extends Thread implements Serializable {
 					// Obter a nova direcao random
 					Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
 					move(newDirection);
+				}else {
+					//TODO Como fazer para mover clientes remotos?
+					// Mover para humano?
+					if(moveDirection!=null){
+						move(moveDirection);
+						clearMoveDirection();
+					}
 				}
-				//TODO Como fazer para mover clientes remotos?
-				// Mover para humano?
-
 				// verificar a sua energia inicial, e mover so em ciclos em que pode
 				Thread.sleep(Game.REFRESH_INTERVAL*originalStrength);
 			}
@@ -115,9 +120,33 @@ public abstract class Player extends Thread implements Serializable {
 		return moveDirection;
 	}
 
-	public abstract void move(Direction d) throws InterruptedException;
+	private void move(Direction newDirection) throws InterruptedException{
+		Coordinate directionVector = newDirection.getVector();
+		// Obter a sua celula atual
+		Cell currentCell = getCurrentCell();
+
+		// Obter a nova coordenada
+		Coordinate newCoordinate = currentCell.getPosition().translate(directionVector);
+		// Se as novas coordenadas não forem válidas, não mexer
+		if(Coordinate.isValid(newCoordinate)){
+			Cell newCell = game.getCell(newCoordinate);
+
+			//System.err.println(super.toString() + " moving to... " + newCell.getPosition());
+			currentCell.transferPlayer(newCell);
+
+			game.notifyChange();
+		}
+
+	}
+
+
 
 	public abstract boolean isHumanPlayer();
+
+
+	public void clearMoveDirection(){
+		setMoveDirection(null);
+	}
 
 	@Override
 	public String toString() {

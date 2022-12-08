@@ -44,6 +44,11 @@ public class ClientGUI {
 //        boardGui.repaint();
 //    }
 
+
+    public BoardJComponent getBoardJComponent() {
+        return boardGui;
+    }
+
     public void init()  {
         frame.setVisible(true);
 

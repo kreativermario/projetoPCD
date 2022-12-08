@@ -119,12 +119,13 @@ public class RemoteClient{
                 System.out.println(debug);
                 clientGUI.updateGameStatus(receivedMessage.getPlayerList());
                 //TODO envio de direcao
-//                    if(boardJComponent.getLastPressedDirection() != null) {
-//                        directionPressed = boardJComponent.getLastPressedDirection();
-//                        boardJComponent.clearLastPressedDirection();
-//                        System.out.println("SENDING " + directionPressed.toString());
-//                        output.println(directionPressed.toString());
-//                    }
+
+                if(clientGUI.getBoardJComponent().getLastPressedDirection() != null) {
+                    directionPressed = clientGUI.getBoardJComponent().getLastPressedDirection();
+                    clientGUI.getBoardJComponent().clearLastPressedDirection();
+                    System.out.println("SENDING " + directionPressed.toString());
+                    output.println(directionPressed.toString());
+                }
 
 //                Cell[][] receivedBoard = receivedGame.getBoard();
 //                game.updateBoard(receivedBoard);

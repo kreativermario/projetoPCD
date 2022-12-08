@@ -9,11 +9,10 @@ import java.util.List;
 
 public class Message implements Serializable {
     private List<Player> playerList = new ArrayList<Player>();
-    private Cell[][] board;
 
 
     public Message(Game game){
-        board = game.getBoard();
+        Cell[][] board = game.getBoard();
         for (int x = 0; x < Game.DIMX; x++) {
             for (int y = 0; y < Game.DIMY; y++) {
                 Player player = board[x][y].getPlayer();
@@ -22,10 +21,6 @@ public class Message implements Serializable {
                 }
             }
         }
-    }
-
-    public Cell[][] getBoard() {
-        return board;
     }
 
     public List<Player> getPlayerList() {

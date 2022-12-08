@@ -16,9 +16,9 @@ import java.util.Random;
  */
 public class Game extends Observable implements Serializable {
 
-	public static final int DIMY = 5;
-	public static final int DIMX = 5;
-	private static final int NUM_PLAYERS = 3; //TODO era 90 players
+	public static final int DIMY = 15;
+	public static final int DIMX = 15;
+	private static final int NUM_PLAYERS = 5; //TODO era 90 players
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;

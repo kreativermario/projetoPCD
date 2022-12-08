@@ -16,10 +16,6 @@ public class HumanPlayer extends Player implements Serializable {
         System.err.println("Created Human " + super.toString());
     }
 
-    public void clearMoveDirection(){
-        super.setMoveDirection(null);
-    }
-
     /**
      * Cria um id do Jogador único
      * @return
@@ -27,33 +23,6 @@ public class HumanPlayer extends Player implements Serializable {
 
     private static int createID() {
         return idCounter.getAndIncrement();
-    }
-
-    @Override
-    public void run() {
-        //Iniciar a posição
-        super.initializeLocation();
-
-        try{
-            while(true){
-                //TODO Alterar
-                Direction direction = super.getMoveDirection();
-                if(direction != null){
-                    move(direction);
-                    clearMoveDirection();
-                }
-
-            }
-        }catch ( InterruptedException e){
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @Override
-    public void move(Direction d) throws InterruptedException {
-
     }
 
     public boolean isHumanPlayer() {

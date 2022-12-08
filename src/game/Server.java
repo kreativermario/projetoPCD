@@ -114,12 +114,16 @@ public class Server extends Thread{
                 output.writeObject(sendingMessage);
                 System.out.println("Sent board to client!");
                 output.reset();
+                if(input.ready()){
+                    String directionReceived = input.readLine();
+                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+                    player.setMoveDirection(Direction.valueOf(directionReceived));
+                }
                 //output.println("Echo: " + message);
 //                String directionReceived = input.readLine();
-//                if (directionReceived != null) {
-//                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
-//                    player.setMoveDirection(Direction.valueOf(directionReceived));
-//                }
+//                System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+//                player.setMoveDirection(Direction.valueOf(directionReceived));
+
 
             }
         }
