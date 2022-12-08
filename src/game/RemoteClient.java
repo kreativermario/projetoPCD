@@ -86,9 +86,14 @@ public class RemoteClient{
             try {
                 //TODO receção
                 Message receivedMessage = (Message) input.readObject();
-                System.out.println(receivedMessage.toString());
-                //List<Player> playerList = receivedMessage.getPlayerList();
-                clientGUI = new ClientGUI(receivedMessage.getBoard(), LEFT, RIGHT, UP, DOWN);
+                String debug = receivedMessage.toString();
+                for(Player p : receivedMessage.getPlayerList()){
+                    debug += " " + p.getCurrentCell();
+                }
+                System.out.println(debug);
+
+                List<Player> playerList = receivedMessage.getPlayerList();
+                clientGUI = new ClientGUI(playerList, LEFT, RIGHT, UP, DOWN);
                 clientGUI.init();
                 break;
             } catch (ClassNotFoundException e) {
@@ -106,9 +111,13 @@ public class RemoteClient{
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
                 Message receivedMessage = (Message) input.readObject();
-                System.out.println(receivedMessage.getBoard().toString());
                 System.out.println("UPDATING STATUS...");
-                clientGUI.updateGameStatus(receivedMessage.getBoard());
+                String debug = receivedMessage.toString();
+                for(Player p : receivedMessage.getPlayerList()){
+                    debug += " " + p.getCurrentCell();
+                }
+                System.out.println(debug);
+                clientGUI.updateGameStatus(receivedMessage.getPlayerList());
                 //TODO envio de direcao
 //                    if(boardJComponent.getLastPressedDirection() != null) {
 //                        directionPressed = boardJComponent.getLastPressedDirection();

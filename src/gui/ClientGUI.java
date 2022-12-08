@@ -34,15 +34,15 @@ public class ClientGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    /*public void updateGameStatus(List<Player> playerList){
+    public void updateGameStatus(List<Player> playerList){
         boardGui.setPlayerList(playerList);
         boardGui.repaint();
-    }*/
-
-    public void updateGameStatus(Cell[][] gameBoard){
-        boardGui.setBoard(gameBoard);
-        boardGui.repaint();
     }
+
+//    public void updateGameStatus(Cell[][] gameBoard){
+//        boardGui.setBoard(gameBoard);
+//        boardGui.repaint();
+//    }
 
     public void init()  {
         frame.setVisible(true);

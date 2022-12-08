@@ -105,11 +105,15 @@ public class Server extends Thread{
             while(true){
                 sleep(Game.REFRESH_INTERVAL);
                 System.out.println("Sending board to client...");
-
-                Message message = new Message(game);
-                output.writeObject(message);
+                Message sendingMessage = new Message(game);
+                String debug = sendingMessage.toString();
+                for(Player p : sendingMessage.getPlayerList()){
+                    debug += " " + p.getCurrentCell();
+                }
+                System.out.println(debug);
+                output.writeObject(sendingMessage);
                 System.out.println("Sent board to client!");
-                output.flush();
+                output.reset();
                 //output.println("Echo: " + message);
 //                String directionReceived = input.readLine();
 //                if (directionReceived != null) {

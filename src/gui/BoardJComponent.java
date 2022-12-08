@@ -71,8 +71,8 @@ public class BoardJComponent extends JComponent implements KeyListener {
 	}
 
 
-	@Override
-	protected void paintComponent(Graphics g) {
+//	@Override
+	/*protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		double cellHeight = getHeight() / (double) Game.DIMY;
 		double cellWidth = getWidth() / (double) Game.DIMX;
@@ -168,10 +168,10 @@ public class BoardJComponent extends JComponent implements KeyListener {
 
 			}
 		}
-	}
+	}*/
 
 
-	/*@Override
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		double cellHeight=getHeight()/(double)Game.DIMY;
@@ -259,7 +259,7 @@ public class BoardJComponent extends JComponent implements KeyListener {
 				}
 			}
 		}
-	}*/
+	}
 
 	public void setPlayerList(List<Player> playerList) {
 		this.playerList = playerList;
