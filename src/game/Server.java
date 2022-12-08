@@ -82,6 +82,8 @@ public class Server extends Thread{
                 proccessConnection();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             } finally {
                 closeConnection();
             }
@@ -96,23 +98,26 @@ public class Server extends Thread{
 
         }
 
-        public void proccessConnection() throws IOException {
+        public void proccessConnection() throws IOException, InterruptedException {
             Player player = new HumanPlayer(game);
             player.start();
             System.out.println("Successful connection, starting proccessing...");
-            do {
-                //sleep(Game.REFRESH_INTERVAL);
+            while(true){
+                sleep(Game.REFRESH_INTERVAL);
                 System.out.println("Sending board to client...");
-                output.writeObject(player);
+
+                Message message = new Message(game);
+                output.writeObject(message);
                 System.out.println("Sent board to client!");
                 output.flush();
                 //output.println("Echo: " + message);
-                String directionReceived = input.readLine();
-                if (directionReceived != null) {
-                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
-                    player.setMoveDirection(Direction.valueOf(directionReceived));
-                }
-            } while (true);
+//                String directionReceived = input.readLine();
+//                if (directionReceived != null) {
+//                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+//                    player.setMoveDirection(Direction.valueOf(directionReceived));
+//                }
+
+            }
         }
 
         public void closeConnection() {

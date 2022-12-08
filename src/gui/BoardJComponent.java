@@ -1,5 +1,6 @@
 package gui;
 
+import environment.Cell;
 import environment.Coordinate;
 import environment.Direction;
 import game.Game;
@@ -12,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
@@ -27,7 +29,8 @@ import javax.swing.JComponent;
  */
 public class BoardJComponent extends JComponent implements KeyListener {
 	private Game game;
-
+	private List<Player> playerList;
+	private Cell[][] board;
 	private Image obstacleImage = new ImageIcon("obstacle.png").getImage();
 	private Image humanPlayerImage= new ImageIcon("abstract-user-flat.png").getImage();
 	private Direction lastPressedDirection=null;
@@ -37,7 +40,7 @@ public class BoardJComponent extends JComponent implements KeyListener {
 	private int UP;
 	private int DOWN;
 
-	
+
 	public BoardJComponent(Game game) {
 		this.game = game;
 		this.customKeys = false;
@@ -45,8 +48,8 @@ public class BoardJComponent extends JComponent implements KeyListener {
 		addKeyListener(this);
 	}
 
-	public BoardJComponent(Game game, int LEFT, int RIGHT, int UP, int DOWN){
-		this.game = game;
+	public BoardJComponent(List<Player> playerList, int LEFT, int RIGHT, int UP, int DOWN){
+		this.playerList = playerList;
 		this.customKeys = true;
 		this.LEFT = LEFT;
 		this.RIGHT = RIGHT;
@@ -56,11 +59,119 @@ public class BoardJComponent extends JComponent implements KeyListener {
 		addKeyListener(this);
 	}
 
-	public void setGame(Game game){
-		this.game = game;
+	public BoardJComponent(Cell[][] board, int LEFT, int RIGHT, int UP, int DOWN){
+		this.board = board;
+		this.customKeys = true;
+		this.LEFT = LEFT;
+		this.RIGHT = RIGHT;
+		this.UP = UP;
+		this.DOWN = DOWN;
+		setFocusable(true);
+		addKeyListener(this);
 	}
 
+
 	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		double cellHeight = getHeight() / (double) Game.DIMY;
+		double cellWidth = getWidth() / (double) Game.DIMX;
+
+		for (int y = 1; y < Game.DIMY; y++) {
+			g.drawLine(0, (int) (y * cellHeight), getWidth(), (int) (y * cellHeight));
+		}
+		for (int x = 1; x < Game.DIMX; x++) {
+			g.drawLine((int) (x * cellWidth), 0, (int) (x * cellWidth), getHeight());
+		}
+		if (customKeys) {
+			//Se for GUI Cliente
+			for (int x = 0; x < Game.DIMX; x++) {
+				for (int y = 0; y < Game.DIMY; y++) {
+					Coordinate p = board[x][y].getPosition();
+					Player player = board[x][y].getPlayer();
+
+					if (player != null) {
+						// Fill yellow if there is a dead player
+						if (player.getCurrentStrength() == 0) {
+							g.setColor(Color.YELLOW);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							g.drawImage(obstacleImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+							// if player is dead, don'd draw anything else?
+							continue;
+						}
+						// Fill green if it is a human player
+						if (player.isHumanPlayer()) {
+							g.setColor(Color.GREEN);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							// Custom icon?
+							g.drawImage(humanPlayerImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+						}
+						g.setColor(new Color(player.getIdentification() * 1000));
+						((Graphics2D) g).setStroke(new BasicStroke(5));
+						Font font = g.getFont().deriveFont((float) cellHeight);
+						g.setFont(font);
+						String strengthMarking = (player.getCurrentStrength() == 10 ? "X" : "" + player.getCurrentStrength());
+						g.drawString(strengthMarking,
+								(int) ((p.x + .2) * cellWidth),
+								(int) ((p.y + .9) * cellHeight));
+					}
+
+				}
+			}
+		} else {
+			for (int x = 0; x < Game.DIMX; x++) {
+				for (int y = 0; y < Game.DIMY; y++) {
+					Coordinate p = new Coordinate(x, y);
+					Player player = game.getCell(p).getPlayer();
+
+
+					if (player != null) {
+						// Fill yellow if there is a dead player
+						if (player.getCurrentStrength() == 0) {
+							g.setColor(Color.YELLOW);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							g.drawImage(obstacleImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+							// if player is dead, don'd draw anything else?
+							continue;
+						}
+						// Fill green if it is a human player
+						if (player.isHumanPlayer()) {
+							g.setColor(Color.GREEN);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							// Custom icon?
+							g.drawImage(humanPlayerImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+						}
+						g.setColor(new Color(player.getIdentification() * 1000));
+						((Graphics2D) g).setStroke(new BasicStroke(5));
+						Font font = g.getFont().deriveFont((float) cellHeight);
+						g.setFont(font);
+						String strengthMarking = (player.getCurrentStrength() == 10 ? "X" : "" + player.getCurrentStrength());
+						g.drawString(strengthMarking,
+								(int) ((p.x + .2) * cellWidth),
+								(int) ((p.y + .9) * cellHeight));
+					}
+
+				}
+
+
+			}
+		}
+	}
+
+
+	/*@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		double cellHeight=getHeight()/(double)Game.DIMY;
@@ -72,89 +183,135 @@ public class BoardJComponent extends JComponent implements KeyListener {
 		for (int x = 1; x < Game.DIMX; x++) {
 			g.drawLine( (int)(x * cellWidth),0, (int)(x* cellWidth), getHeight());
 		}
-		for (int x = 0; x < Game.DIMX; x++) 
-			for (int y = 0; y < Game.DIMY; y++) {
-				Coordinate p = new Coordinate(x, y);
-
-				Player player = game.getCell(p).getPlayer();
-				if(player!=null) {
-					// Fill yellow if there is a dead player
-					if(player.getCurrentStrength()==0) {
-						g.setColor(Color.YELLOW);
-						g.fillRect((int)(p.x* cellWidth), 
-								(int)(p.y * cellHeight),
-								(int)(cellWidth),(int)(cellHeight));
-						g.drawImage(obstacleImage, (int)(p.x * cellWidth), (int)(p.y*cellHeight), 
-								(int)(cellWidth),(int)(cellHeight), null);
-						// if player is dead, don'd draw anything else?
-						continue;
-					}
-					// Fill green if it is a human player
-					if(player.isHumanPlayer()) {
-						g.setColor(Color.GREEN);
-						g.fillRect((int)(p.x* cellWidth), 
-								(int)(p.y * cellHeight),
-								(int)(cellWidth),(int)(cellHeight));
-						// Custom icon?
-						g.drawImage(humanPlayerImage, (int)(p.x * cellWidth), (int)(p.y*cellHeight), 
-								(int)(cellWidth),(int)(cellHeight), null);
-					}
-					g.setColor(new Color(player.getIdentification() * 1000));
-					((Graphics2D) g).setStroke(new BasicStroke(5));
-					Font font = g.getFont().deriveFont( (float)cellHeight);
-					g.setFont( font );
-					String strengthMarking=(player.getCurrentStrength()==10?"X":""+player.getCurrentStrength());
-					g.drawString(strengthMarking,
-							(int) ((p.x + .2) * cellWidth),
-							(int) ((p.y + .9) * cellHeight));
+		//Se for GUI Cliente
+		if(customKeys) {
+			for(Player player : playerList){
+				Coordinate p = player.getCurrentCell().getPosition();
+				// Fill yellow if there is a dead player
+				if (player.getCurrentStrength() == 0) {
+					g.setColor(Color.YELLOW);
+					g.fillRect((int) (p.x * cellWidth),
+							(int) (p.y * cellHeight),
+							(int) (cellWidth), (int) (cellHeight));
+					g.drawImage(obstacleImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+							(int) (cellWidth), (int) (cellHeight), null);
+					// if player is dead, don'd draw anything else?
+					continue;
 				}
-
+				// Fill green if it is a human player
+				if (player.isHumanPlayer()) {
+					g.setColor(Color.GREEN);
+					g.fillRect((int) (p.x * cellWidth),
+							(int) (p.y * cellHeight),
+							(int) (cellWidth), (int) (cellHeight));
+					// Custom icon?
+					g.drawImage(humanPlayerImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+							(int) (cellWidth), (int) (cellHeight), null);
+				}
+				g.setColor(new Color(player.getIdentification() * 1000));
+				((Graphics2D) g).setStroke(new BasicStroke(5));
+				Font font = g.getFont().deriveFont((float) cellHeight);
+				g.setFont(font);
+				String strengthMarking = (player.getCurrentStrength() == 10 ? "X" : "" + player.getCurrentStrength());
+				g.drawString(strengthMarking,
+						(int) ((p.x + .2) * cellWidth),
+						(int) ((p.y + .9) * cellHeight));
 			}
+		}else if(customKeys == false){
+			for (int x = 0; x < Game.DIMX; x++) {
+				for (int y = 0; y < Game.DIMY; y++) {
+					Coordinate p = new Coordinate(x, y);
+					Player player = game.getCell(p).getPlayer();
+
+
+					if (player != null) {
+						// Fill yellow if there is a dead player
+						if (player.getCurrentStrength() == 0) {
+							g.setColor(Color.YELLOW);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							g.drawImage(obstacleImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+							// if player is dead, don'd draw anything else?
+							continue;
+						}
+						// Fill green if it is a human player
+						if (player.isHumanPlayer()) {
+							g.setColor(Color.GREEN);
+							g.fillRect((int) (p.x * cellWidth),
+									(int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight));
+							// Custom icon?
+							g.drawImage(humanPlayerImage, (int) (p.x * cellWidth), (int) (p.y * cellHeight),
+									(int) (cellWidth), (int) (cellHeight), null);
+						}
+						g.setColor(new Color(player.getIdentification() * 1000));
+						((Graphics2D) g).setStroke(new BasicStroke(5));
+						Font font = g.getFont().deriveFont((float) cellHeight);
+						g.setFont(font);
+						String strengthMarking = (player.getCurrentStrength() == 10 ? "X" : "" + player.getCurrentStrength());
+						g.drawString(strengthMarking,
+								(int) ((p.x + .2) * cellWidth),
+								(int) ((p.y + .9) * cellHeight));
+					}
+
+				}
+			}
+		}
+	}*/
+
+	public void setPlayerList(List<Player> playerList) {
+		this.playerList = playerList;
+	}
+
+	public void setBoard(Cell [][] board) {
+		this.board = board;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-			if(!customKeys){
-				switch(keyCode){
-					case KeyEvent.VK_LEFT :
-						System.out.println("PRESSED LEFT");
-						lastPressedDirection=environment.Direction.LEFT;
-						break;
-					case KeyEvent.VK_RIGHT:
-						System.out.println("PRESSED RIGHT");
-						lastPressedDirection=environment.Direction.RIGHT;
-						break;
-					case KeyEvent.VK_UP:
-						System.out.println("PRESSED UP");
-						lastPressedDirection=environment.Direction.UP;
-						break;
-					case KeyEvent.VK_DOWN:
-						System.out.println("PRESSED DOWN");
-						lastPressedDirection=environment.Direction.DOWN;
-						break;
-				}
-			}else{
-				if(keyCode == UP){
-					System.out.println("PRESSED UP");
-					lastPressedDirection=environment.Direction.UP;
-					return;
-				}
-				if(keyCode == DOWN){
-					System.out.println("PRESSED DOWN");
-					lastPressedDirection=environment.Direction.DOWN;
-					return;
-				}
-				if(keyCode == RIGHT){
-					System.out.println("PRESSED RIGHT");
-					lastPressedDirection=environment.Direction.RIGHT;
-					return;
-				}
-				if(keyCode == LEFT) {
+		if(!customKeys){
+			switch(keyCode){
+				case KeyEvent.VK_LEFT :
 					System.out.println("PRESSED LEFT");
 					lastPressedDirection=environment.Direction.LEFT;
-				}
+					break;
+				case KeyEvent.VK_RIGHT:
+					System.out.println("PRESSED RIGHT");
+					lastPressedDirection=environment.Direction.RIGHT;
+					break;
+				case KeyEvent.VK_UP:
+					System.out.println("PRESSED UP");
+					lastPressedDirection=environment.Direction.UP;
+					break;
+				case KeyEvent.VK_DOWN:
+					System.out.println("PRESSED DOWN");
+					lastPressedDirection=environment.Direction.DOWN;
+					break;
 			}
+		}else{
+			if(keyCode == UP){
+				System.out.println("PRESSED UP");
+				lastPressedDirection=environment.Direction.UP;
+				return;
+			}
+			if(keyCode == DOWN){
+				System.out.println("PRESSED DOWN");
+				lastPressedDirection=environment.Direction.DOWN;
+				return;
+			}
+			if(keyCode == RIGHT){
+				System.out.println("PRESSED RIGHT");
+				lastPressedDirection=environment.Direction.RIGHT;
+				return;
+			}
+			if(keyCode == LEFT) {
+				System.out.println("PRESSED LEFT");
+				lastPressedDirection=environment.Direction.LEFT;
+			}
+		}
 	}
 
 

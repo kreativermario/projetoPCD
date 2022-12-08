@@ -3,12 +3,15 @@ package game;
 import environment.Cell;
 import environment.Direction;
 import gui.BoardJComponent;
+import gui.ClientGUI;
 import gui.GameGuiMain;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -21,9 +24,8 @@ public class RemoteClient{
     private final int PORT;
     //TODO nao preciso de game
     private Game game;
-    private GameGuiMain clientGUI;
+    private ClientGUI clientGUI;
     private Player clientPlayer;
-    private BoardJComponent boardJComponent;
     private int LEFT;
     private int RIGHT;
     private int UP;
@@ -83,22 +85,18 @@ public class RemoteClient{
         while(true){
             try {
                 //TODO receção
-                //Game receivedGame = (Game) input.readObject();
-                Player receivedPlayer = (Player) input.readObject();
-                if(receivedPlayer != null){
-                    clientPlayer = receivedPlayer;
-                    game = clientPlayer.getGame();
-                    boardJComponent = new BoardJComponent(game, LEFT, RIGHT, UP, DOWN);
-                    clientGUI = new GameGuiMain(game, boardJComponent,LEFT, RIGHT, UP, DOWN);
-                    clientGUI.init();
-                    break;
-                }
+                Message receivedMessage = (Message) input.readObject();
+                System.out.println(receivedMessage.toString());
+                //List<Player> playerList = receivedMessage.getPlayerList();
+                clientGUI = new ClientGUI(receivedMessage.getBoard(), LEFT, RIGHT, UP, DOWN);
+                clientGUI.init();
+                break;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
+
 
     public void proccessConnection() throws IOException {
         System.out.println("Client processing continuous connection...");
@@ -107,19 +105,18 @@ public class RemoteClient{
             try {
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
-                Player receivedPlayer = (Player) input.readObject();
-                System.out.println(receivedPlayer.toString());
-                if(receivedPlayer != null){
-                    System.out.println("UPDATING STATUS...");
-                    clientGUI.updateGameStatus(game);
-                    //TODO envio de direcao
-                    if(boardJComponent.getLastPressedDirection() != null) {
-                        directionPressed = boardJComponent.getLastPressedDirection();
-                        boardJComponent.clearLastPressedDirection();
-                        System.out.println("SENDING " + directionPressed.toString());
-                        output.println(directionPressed.toString());
-                    }
-                }
+                Message receivedMessage = (Message) input.readObject();
+                System.out.println(receivedMessage.getBoard().toString());
+                System.out.println("UPDATING STATUS...");
+                clientGUI.updateGameStatus(receivedMessage.getBoard());
+                //TODO envio de direcao
+//                    if(boardJComponent.getLastPressedDirection() != null) {
+//                        directionPressed = boardJComponent.getLastPressedDirection();
+//                        boardJComponent.clearLastPressedDirection();
+//                        System.out.println("SENDING " + directionPressed.toString());
+//                        output.println(directionPressed.toString());
+//                    }
+
 //                Cell[][] receivedBoard = receivedGame.getBoard();
 //                game.updateBoard(receivedBoard);
             } catch (ClassNotFoundException e) {

@@ -6,6 +6,8 @@ import environment.Cell;
 import environment.Coordinate;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Random;
 
@@ -22,7 +24,6 @@ public class Game extends Observable implements Serializable {
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
-
 	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 	protected Cell[][] board;
 
@@ -119,6 +120,9 @@ public class Game extends Observable implements Serializable {
 		return board[at.x][at.y];
 	}
 
+	public Cell[][] getBoard() {
+		return board;
+	}
 	/**
 	 * Updates GUI. Should be called anytime the game state changes
 	 */
