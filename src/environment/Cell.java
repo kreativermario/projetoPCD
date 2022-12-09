@@ -10,21 +10,31 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+/**
+ * Classe da Cell que contem o Player
+ */
 public class Cell implements Comparable<Cell>, Serializable{
-	private Coordinate position;
-	private Game game;
 	public Lock lock = new ReentrantLock();
 	public Lock moveLock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
-	private static AtomicInteger idCounter = new AtomicInteger();
-
-	private static AtomicInteger fightCounter = new AtomicInteger(); //TODO Debug id da fight
-
+	private Coordinate position;
+	private Game game;
 	private int id;
 	private Player player=null;
-	private boolean isObstacle;
+	private boolean isObstacle = false;
 
+
+	// Variaveis estaticas
+	private static AtomicInteger idCounter = new AtomicInteger();
+
+	//TODO Variavel para debug que identifica os confrontos
+	private static AtomicInteger fightCounter = new AtomicInteger();
+
+	/**
+	 * Metodo construtor
+	 * @param position Coordinate
+	 * @param g Game
+	 */
 	public Cell(Coordinate position,Game g) {
 		super();
 		id = createID();
@@ -32,89 +42,51 @@ public class Cell implements Comparable<Cell>, Serializable{
 		this.game=g;
 	}
 
-	public int getId(){
+	/**
+	 * Método que retorna a identificacao unica da Cell
+	 * @return id int
+	 */
+	private int getId(){
 		return id;
 	}
 
+	/**
+	 * Metodo que cria a identificacao unica da Cell
+	 * @return id int
+	 */
 	private int createID() {
 		return idCounter.getAndIncrement();
 	}
 
+	/**
+	 * Metodo que cria um id unico para cada encontro para DEBUG
+	 * @return fightId int
+	 */
 	private int createFightID() {
 		return fightCounter.getAndIncrement();
 	}
 
 	/**
-	 * Obter a coordenada da celula
-	 * @return position
+	 * Metodo principal utilizado pelos players para mover
+	 * @param to Cell
+	 * @throws InterruptedException
 	 */
-	public Coordinate getPosition() {
-		return position;
-	}
-
-	/**
-	 * Devolve se a celula esta ocupada por um player
-	 * @return boolean
-	 */
-	public boolean isOcupied() {
-		return player!=null;
-	}
-
-
-	/**
-	 * Devolve se o player que esta na cell e um obstaculo ou nao
-	 * @return
-	 */
-	public boolean isObstacle(){
-		lock.lock();
-		boolean result;
-		try{
-			result= isObstacle;
-		}finally {
-			lock.unlock();
-		}
-		return result;
-	}
-
-	private void setObstacle(boolean isObstacle){
-		this.player.setObstacle();
-		this.isObstacle = isObstacle;
-	}
-
-
-	/**
-	 * Devolve o player que esta atualmente na celula
-	 * @return player
-	 */
-	public Player getPlayer() {
-		//TODO Rever!
-		lock.lock();
-		Player returnPlayer = this.player;
-		lock.unlock();
-		return returnPlayer;
-	}
-
-
-	private void setPlayerTransfer(Player player){
-		this.player = player;
-	}
-
-	public void transferPlayer(Cell to){
+	public void transferPlayer(Cell to) throws InterruptedException {
 
 		int fightId = createFightID();
-		System.err.println("Encounter" + fightId + " || TRANSFER BETWEEN " + this + " AND " + to);
+		//System.err.println("Encounter" + fightId + " || TRANSFER BETWEEN " + this + " AND " + to);
 
 		//TODO try locks
 		if(this.compareTo(to) > 0){
 			this.moveLock.lock();
-			System.err.println("Encounter" + fightId + " || locked " + this);
+			//System.err.println("Encounter" + fightId + " || locked " + this);
 			to.moveLock.lock();
-			System.err.println("Encounter" +  fightId+ " || locked " + to);
+			//System.err.println("Encounter" +  fightId+ " || locked " + to);
 		}else{
 			to.moveLock.lock();
-			System.err.println("Encounter" +  fightId + " || locked " + to);
+			//System.err.println("Encounter" +  fightId + " || locked " + to);
 			this.moveLock.lock();
-			System.err.println("Encounter" + fightId + " || locked " + this);
+			//System.err.println("Encounter" + fightId + " || locked " + this);
 		}
 
 		//TODO locks com sucesso vou fazer disputa
@@ -130,14 +102,14 @@ public class Cell implements Comparable<Cell>, Serializable{
 					} catch (InterruptedException e) {
 						if(this.compareTo(to) > 0){
 							this.moveLock.unlock();
-							System.err.println("Encounter" + fightId + " || Unlocked " + this);
+							//System.err.println("Encounter" + fightId + " || Unlocked " + this);
 							to.moveLock.unlock();
-							System.err.println("Encounter" + fightId + " || Unlocked " + to);
+							//System.err.println("Encounter" + fightId + " || Unlocked " + to);
 						}else{
 							to.moveLock.unlock();
-							System.err.println("Encounter" + fightId + " || Unlocked " + to);
+							//System.err.println("Encounter" + fightId + " || Unlocked " + to);
 							this.moveLock.unlock();
-							System.err.println("Encounter" + fightId + " || Unlocked " + this);
+							//System.err.println("Encounter" + fightId + " || Unlocked " + this);
 						}
 						return;
 					}
@@ -151,20 +123,20 @@ public class Cell implements Comparable<Cell>, Serializable{
 		// Não tem player, então é só mover!
 		}else {
 			this.removePlayer();
-			to.setPlayerTransfer(fromPlayer);
+			to.setPlayer(fromPlayer);
 		}
 
 		//TODO Acabou a disputa, dar unlock
 		if(this.compareTo(to) > 0){
 			this.moveLock.unlock();
-			System.err.println("Encounter" + fightId + " || Unlocked " + this);
+			//System.err.println("Encounter" + fightId + " || Unlocked " + this);
 			to.moveLock.unlock();
-			System.err.println("Encounter" + fightId + " || Unlocked " + to);
+			//System.err.println("Encounter" + fightId + " || Unlocked " + to);
 		}else{
 			to.moveLock.unlock();
-			System.err.println("Encounter" + fightId + " || Unlocked " + to);
+			//System.err.println("Encounter" + fightId + " || Unlocked " + to);
 			this.moveLock.unlock();
-			System.err.println("Encounter" + fightId + " || Unlocked " + this);
+			//System.err.println("Encounter" + fightId + " || Unlocked " + this);
 		}
 
 	}
@@ -255,6 +227,55 @@ public class Cell implements Comparable<Cell>, Serializable{
 		}finally {
 			lock.unlock();
 		}
+	}
+
+	/**
+	 * Obter a coordenada da celula
+	 * @return position
+	 */
+	public Coordinate getPosition() {
+		return position;
+	}
+
+
+	/**
+	 * Devolve o player que esta atualmente na celula
+	 * @return player
+	 */
+	public Player getPlayer() {
+		//TODO Rever!
+		lock.lock();
+		Player returnPlayer = this.player;
+		lock.unlock();
+		return returnPlayer;
+	}
+
+	/**
+	 * Devolve se a celula esta ocupada por um player
+	 * @return boolean
+	 */
+	public boolean isOcupied() {
+		return player!=null;
+	}
+
+	private void setObstacle(boolean isObstacle){
+		this.player.setObstacle();
+		this.isObstacle = isObstacle;
+	}
+
+	/**
+	 * Devolve se o player que esta na cell e um obstaculo ou nao
+	 * @return
+	 */
+	public boolean isObstacle(){
+		lock.lock();
+		boolean result;
+		try{
+			result= isObstacle;
+		}finally {
+			lock.unlock();
+		}
+		return result;
 	}
 
 	@Override

@@ -1,13 +1,17 @@
 package coordination;
-
-import environment.Cell;
 import game.Game;
-import game.Player;
 
+/**
+ * Thread Autónoma que interrompe a thread que chama apos 2 segundos
+ */
 public class AutonomousThread extends Thread{
 
     private Thread player;
 
+    /**
+     * Método construtor
+     * @param player Thread
+     */
     public AutonomousThread(Thread player){
         System.err.println(threadId() + " || CREATED AUTONOMOUS THREAD FOR ");
         this.player = player;
