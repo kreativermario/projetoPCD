@@ -18,12 +18,13 @@ public class Game extends Observable implements Serializable {
 
 	public static final int DIMY = 15;
 	public static final int DIMX = 15;
-	private static final int NUM_PLAYERS = 90; //TODO era 90 players
+	private static final int NUM_PLAYERS = 5; //TODO era 90 players
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
+	private boolean gameEnded = false;
 	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 	protected Cell[][] board;
 
@@ -57,6 +58,7 @@ public class Game extends Observable implements Serializable {
 						}
 					}
 				}
+				gameEnded = true;
 				//TODO O que fazer quando acabar
 				System.err.println("GAME FINISHED!");
 			}
@@ -66,6 +68,10 @@ public class Game extends Observable implements Serializable {
 		Server server = new Server(this);
 		server.start();
 
+	}
+
+	public boolean isGameEnded() {
+		return gameEnded;
 	}
 
 	/**

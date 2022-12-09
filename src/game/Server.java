@@ -103,6 +103,10 @@ public class Server extends Thread{
             player.start();
             System.out.println("Successful connection, starting proccessing...");
             while(true){
+                //Jogo terminou, parar de enviar
+                if(game.isGameEnded()){
+                    closeConnection();
+                }
                 sleep(Game.REFRESH_INTERVAL);
                 System.out.println("Sending board to client...");
                 Message sendingMessage = new Message(game);

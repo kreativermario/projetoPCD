@@ -111,6 +111,8 @@ public class Cell implements Comparable<Cell>, Serializable{
 							this.moveLock.unlock();
 							//System.err.println("Encounter" + fightId + " || Unlocked " + this);
 						}
+						//Caso o jogo acabou, nao quero que o player tente mover outra vez, delegar a excecao e interrupt
+						if(game.isGameEnded()) throw new InterruptedException();
 						return;
 					}
 				}
