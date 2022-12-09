@@ -3,10 +3,10 @@ package game;
 
 
 import environment.Cell;
+import environment.Coordinate;
 import environment.Direction;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
@@ -15,7 +15,7 @@ import java.util.Random;
  * @author luismota
  *
  */
-public abstract class Player extends Thread{
+public abstract class Player extends Thread implements Serializable {
 
 
 	protected  Game game;
@@ -27,6 +27,7 @@ public abstract class Player extends Thread{
 	private static final List<Direction> VALUES = List.of(Direction.values());
 	private static final int SIZE = VALUES.size();
 	private static final Random RANDOM = new Random();
+	private Direction moveDirection;
 
 
 	// TODO: get player position from data in game
@@ -68,10 +69,14 @@ public abstract class Player extends Thread{
 					// Obter a nova direcao random
 					Direction newDirection = VALUES.get(RANDOM.nextInt(SIZE));
 					move(newDirection);
+				}else {
+					//TODO Como fazer para mover clientes remotos?
+					// Mover para humano?
+					if(moveDirection!=null){
+						move(moveDirection);
+						clearMoveDirection();
+					}
 				}
-				//TODO Como fazer para mover clientes remotos?
-				// Mover para humano?
-
 				// verificar a sua energia inicial, e mover so em ciclos em que pode
 				Thread.sleep(Game.REFRESH_INTERVAL*originalStrength);
 			}
@@ -107,9 +112,41 @@ public abstract class Player extends Thread{
 		this.currentStrength += strength;
 	}
 
-	public abstract void move(Direction d) throws InterruptedException;
+	public void setMoveDirection(Direction moveDirection) {
+		this.moveDirection = moveDirection;
+	}
+
+	public Direction getMoveDirection() {
+		return moveDirection;
+	}
+
+	private void move(Direction newDirection) throws InterruptedException{
+		Coordinate directionVector = newDirection.getVector();
+		// Obter a sua celula atual
+		Cell currentCell = getCurrentCell();
+
+		// Obter a nova coordenada
+		Coordinate newCoordinate = currentCell.getPosition().translate(directionVector);
+		// Se as novas coordenadas não forem válidas, não mexer
+		if(Coordinate.isValid(newCoordinate)){
+			Cell newCell = game.getCell(newCoordinate);
+
+			//System.err.println(super.toString() + " moving to... " + newCell.getPosition());
+			currentCell.transferPlayer(newCell);
+
+			game.notifyChange();
+		}
+
+	}
+
+
 
 	public abstract boolean isHumanPlayer();
+
+
+	public void clearMoveDirection(){
+		setMoveDirection(null);
+	}
 
 	@Override
 	public String toString() {
@@ -137,6 +174,10 @@ public abstract class Player extends Thread{
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public Game getGame() {
+		return game;
 	}
 
 	public byte getCurrentStrength() {

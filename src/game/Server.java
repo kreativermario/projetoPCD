@@ -1,20 +1,34 @@
-/*
+
 package game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import environment.Direction;
+import gui.BoardJComponent;
+import gui.GameGuiMain;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server extends Thread{
 
     private ServerSocket server;
     protected  Game game;
     public static final int PORT = 2022;
 
+    public Server() {
+        System.err.println("Server created!");
+        this.game = new Game();
+        try{
+            server = new ServerSocket(PORT); // Throws IOException
+        }catch (IOException e){
+            System.err.println("Error connecting server... aborting!");
+            System.exit(1);
+        }
+    }
+
+    //Server com GUI
     public Server(Game game) {
+        System.err.println("Server created!");
         this.game = game;
         try{
             server = new ServerSocket(PORT); // Throws IOException
@@ -24,8 +38,14 @@ public class Server {
         }
     }
 
+    @Override
+    public void run(){
+        while(true){
+            runServer();
+        }
+    }
 
-    public void runServer(){
+    public void runServer() {
         while (true){
             try {
                 waitForConnection();
@@ -42,17 +62,14 @@ public class Server {
         connectionHandler.start();
     }
 
-    */
-/**
-     * Classe que trata das conexões dos vários clientes, é a thread que trata
-     *//*
 
+    //Classe que trata das conexões dos vários clientes, é a thread que trata
     public class ConnectionHandler extends Thread{
 
         // O que é necessário para ligar um cliente
         private Socket connection;
         private BufferedReader input;
-        private PrintWriter output;
+        private ObjectOutputStream output;
 
         public ConnectionHandler(Socket connection){
             this.connection = connection;
@@ -65,6 +82,8 @@ public class Server {
                 proccessConnection();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             } finally {
                 closeConnection();
             }
@@ -73,40 +92,50 @@ public class Server {
 
         public void getStreams() throws IOException{
             //TODO Autoflush, quando escrevo algo, manda logo
-            output = new PrintWriter(connection.getOutputStream(), true);
+            output = new ObjectOutputStream(connection.getOutputStream());
 
             input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
         }
 
-        public void proccessConnection() throws IOException{
-            System.out.println("Successful connection, starting proccessing...");
+        public void proccessConnection() throws IOException, InterruptedException {
             Player player = new HumanPlayer(game);
-
-            try {
-                game.addPlayerToGame(player);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            player.start();
+            System.out.println("Successful connection, starting proccessing...");
             while(true){
-                String message = input.readLine();
+                //Jogo terminou, parar de enviar
+                if(game.isGameEnded()){
+                    closeConnection();
+                }
+                sleep(Game.REFRESH_INTERVAL);
+                System.out.println("Sending board to client...");
+                Message sendingMessage = new Message(game);
+                String debug = sendingMessage.toString();
+                for(Player p : sendingMessage.getPlayerList()){
+                    debug += " " + p.getCurrentCell();
+                }
+                System.out.println(debug);
+                output.writeObject(sendingMessage);
+                System.out.println("Sent board to client!");
+                output.reset();
+                if(input.ready()){
+                    String directionReceived = input.readLine();
+                    System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+                    player.setMoveDirection(Direction.valueOf(directionReceived));
+                }
+                //output.println("Echo: " + message);
+//                String directionReceived = input.readLine();
+//                System.out.println("DIRECTION RECEIVED !!! " + directionReceived);
+//                player.setMoveDirection(Direction.valueOf(directionReceived));
 
-                if("FIM".equals(message)) break;
 
-                System.out.println("ECHO: " + message);
-
-                output.println("Echo: " + message);
             }
         }
 
         public void closeConnection() {
-            */
-/**
-             * Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
-             * RESOURCE LEAK! Teria que fazer try catch para cada um.
-             *//*
 
+             /*Este método não é o mais correto, porque se input der erro não vai fechar o resto tipo o output,
+            RESOURCE LEAK! Teria que fazer try catch para cada um.*/
             try{
                 input.close();
                 output.close();
@@ -114,13 +143,10 @@ public class Server {
             }catch (IOException e){
                 e.printStackTrace();
             }
-
         }
-
-
 
     }
 
 
 }
-*/
+

@@ -4,26 +4,27 @@ package game;
 import coordination.FinishCountDownLatch;
 import environment.Cell;
 import environment.Coordinate;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Random;
 
 /**
  * Classe principal que processa o jogo
  */
-public class Game extends Observable {
+public class Game extends Observable implements Serializable {
 
-	public static final int DIMY = 10;
-	public static final int DIMX = 10;
-	private static final int NUM_PLAYERS = 70; //TODO era 90 players
-
+	public static final int DIMY = 15;
+	public static final int DIMX = 15;
+	private static final int NUM_PLAYERS = 5; //TODO era 90 players
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
-
-	//public Server server;
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
-
+	private boolean gameEnded = false;
 	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 	protected Cell[][] board;
 
@@ -57,15 +58,20 @@ public class Game extends Observable {
 						}
 					}
 				}
+				gameEnded = true;
 				//TODO O que fazer quando acabar
 				System.err.println("GAME FINISHED!");
 			}
 		};
 		endGame.start();
-		//TODO Server
-		//this.server = new Server(this);
-		//server.runServer();
+		//TODO Debug morte
+		Server server = new Server(this);
+		server.start();
 
+	}
+
+	public boolean isGameEnded() {
+		return gameEnded;
 	}
 
 	/**
@@ -106,12 +112,6 @@ public class Game extends Observable {
 	public void addPlayerToGame(Player player) throws InterruptedException{
 		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
 		Cell initCell = getCell(initCoordinate);
-		// Se a celula gerada for um player morto, tentar fazer spawn outra vez
-		if(initCell.isObstacle()){
-			System.err.println(player + " TENTOU SPAWNAR EM CIMA DE UM DEAD PLAYER");
-			Thread.sleep(MAX_WAITING_TIME_FOR_MOVE);
-			addPlayerToGame(player);
-		}
 		initCell.setPlayer(player);
 	}
 
@@ -124,6 +124,9 @@ public class Game extends Observable {
 		return board[at.x][at.y];
 	}
 
+	public Cell[][] getBoard() {
+		return board;
+	}
 	/**
 	 * Updates GUI. Should be called anytime the game state changes
 	 */
