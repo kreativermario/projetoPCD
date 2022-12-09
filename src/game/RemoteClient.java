@@ -149,9 +149,8 @@ public class RemoteClient{
 
     public static void main(String[] args) throws UnknownHostException {
         RemoteClient client = new RemoteClient(InetAddress.getByName("localHost"), 2022,
-                37, 39, 38, 40);
+                65, 68, 87, 83);
         client.runClient();
-        System.out.println(InetAddress.getByName("localHost"));
     }
 
 }
