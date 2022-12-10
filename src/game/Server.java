@@ -131,7 +131,7 @@ public class Server extends Thread{
                 output.reset();
                 //Jogo terminou, parar de enviar
                 if(game.isGameEnded()){
-                    closeConnection();
+                    break;
                 }
                 if(input.ready()){
                     String directionReceived = input.readLine();
