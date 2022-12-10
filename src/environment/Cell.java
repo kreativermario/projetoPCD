@@ -17,11 +17,11 @@ public class Cell implements Comparable<Cell>, Serializable{
 	public Lock lock = new ReentrantLock();
 	public Lock moveLock = new ReentrantLock();
 	private Condition isFull = lock.newCondition();
-	private Coordinate position;
-	private Game game;
-	private int id;
 	private Player player=null;
 	private boolean isObstacle = false;
+	private final Coordinate position;
+	private final Game game;
+	private final int id;
 
 
 	// Variaveis estaticas
@@ -146,8 +146,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 
 	/**
 	 * Metodo que trata a disputa entre dois players
-	 *
-	 * @param opponent
+	 * @param opponent Player
 	 */
 	private void fight(Player opponent){
 
@@ -163,13 +162,13 @@ public class Cell implements Comparable<Cell>, Serializable{
 				case 0 -> {
 					this.player.addStrength(otherPlayerStrength);
 					System.err.println(this.player + " PLAYER WON!"); //TODO Debug
-					opponent.getCurrentCell().setObstacle(true);
+					opponent.getCurrentCell().setObstacle();
 					opponent.interrupt();
 				}
 				case 1 -> {
 					opponent.addStrength(thisPlayerStrength);
 					System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
-					this.setObstacle(true);
+					this.setObstacle();
 					this.player.interrupt();
 				}
 			}
@@ -178,14 +177,14 @@ public class Cell implements Comparable<Cell>, Serializable{
 		} else if (thisPlayerStrength > otherPlayerStrength) {
 			this.player.addStrength(opponent.getCurrentStrength());
 			System.err.println(this.player + " PLAYER WON!"); //TODO Debug
-			opponent.getCurrentCell().setObstacle(true);
+			opponent.getCurrentCell().setObstacle();
 			opponent.interrupt();
 
 			// O outro player ganha ao player que esta nesta celula
 		} else {
 			opponent.addStrength(this.player.getCurrentStrength());
 			System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
-			this.setObstacle(true);
+			this.setObstacle();
 			this.player.interrupt();
 		}
 		//Caso houve problema
@@ -193,8 +192,11 @@ public class Cell implements Comparable<Cell>, Serializable{
 	}
 
 
-	// Should not be used like this in the initial state: cell might be occupied, must coordinate this operation
-	//TODO Deve ser so usado na inicializacao
+	/**
+	 * Metodo utilizado para colocar player na cell
+	 * @param player Player
+	 * @throws InterruptedException
+	 */
 	public void setPlayer(Player player) throws InterruptedException{
 		lock.lock();
 		try{
@@ -207,8 +209,8 @@ public class Cell implements Comparable<Cell>, Serializable{
 						game.addPlayerToGame(player);
 					}
 				}
-
-				System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT " + getPosition()
+				System.out.println("Player " + player.getIdentification() + " TRIED TO SPAWN [!!OCCUPIED!!] AT "
+						+ getPosition()
 						+ " || Player " + this.player.getIdentification() + " ALREADY THERE!!");
 				isFull.await();
 			}
@@ -245,7 +247,6 @@ public class Cell implements Comparable<Cell>, Serializable{
 	 * @return player
 	 */
 	public Player getPlayer() {
-		//TODO Rever!
 		lock.lock();
 		Player returnPlayer = this.player;
 		lock.unlock();
@@ -257,17 +258,21 @@ public class Cell implements Comparable<Cell>, Serializable{
 	 * @return boolean
 	 */
 	public boolean isOcupied() {
-		return player!=null;
+		return getPlayer()!=null;
 	}
 
-	private void setObstacle(boolean isObstacle){
+	/**
+	 * Funcao que coloca a celula como obstaculo
+	 */
+	private void setObstacle(){
+		// Pintar o player como obstaculo morto (currentStrength = 0)
 		this.player.setObstacle();
-		this.isObstacle = isObstacle;
+		this.isObstacle = true;
 	}
 
 	/**
 	 * Devolve se o player que esta na cell e um obstaculo ou nao
-	 * @return
+	 * @return result boolean
 	 */
 	public boolean isObstacle(){
 		lock.lock();

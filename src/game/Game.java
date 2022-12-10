@@ -16,16 +16,18 @@ import java.util.Random;
  */
 public class Game extends Observable implements Serializable {
 
+	// Variaveis estaticas
 	public static final int DIMY = 15;
 	public static final int DIMX = 15;
-	private static final int NUM_PLAYERS = 5; //TODO era 90 players
+	private static final int NUM_PLAYERS = 60; //TODO era 90 players
 	private static final int NUM_FINISHED_PLAYERS_TO_END_GAME=3;
 	public static final long REFRESH_INTERVAL = 400;
 	public static final double MAX_INITIAL_STRENGTH = 3;
 	public static final long MAX_WAITING_TIME_FOR_MOVE = 2000;
 	public static final long INITIAL_WAITING_TIME = 10000;
-	private boolean gameEnded = false;
 	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
+
+	private boolean gameEnded = false;
 	protected Cell[][] board;
 
 	/**
@@ -40,6 +42,7 @@ public class Game extends Observable implements Serializable {
 		// Adiciona bots ao jogo
 		addBotsToGame();
 
+		// Inicia a thread que espera que o jogo acabe e interrompe todos os players
 		Thread endGame =  new Thread() {
 			@Override
 			public void run(){
@@ -70,12 +73,9 @@ public class Game extends Observable implements Serializable {
 
 	}
 
-	public boolean isGameEnded() {
-		return gameEnded;
-	}
 
 	/**
-	 * Colocar jogadores no jogo
+	 * Colocar jogadores automaticos no jogo
 	 */
 	private void addBotsToGame(){
 		for(int i = 1; i <= NUM_PLAYERS; i++){
@@ -86,7 +86,22 @@ public class Game extends Observable implements Serializable {
 			Player player = new BotPlayer(i, this, (byte) strength);
 			player.start();
 		}
+	}
 
+	/**
+	 *
+	 * @param player
+	 * @throws InterruptedException
+	 */
+	public void addPlayerToGame(Player player) throws InterruptedException{
+		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
+		Cell initCell = getCell(initCoordinate);
+		initCell.setPlayer(player);
+	}
+
+
+	public boolean isGameEnded() {
+		return gameEnded;
 	}
 
 	/**
@@ -101,18 +116,6 @@ public class Game extends Observable implements Serializable {
 					if(board[x][y].getPlayer().equals(player))
 						return board[x][y];
 		return null;
-	}
-
-
-	/**
-	 *
-	 * @param player
-	 * @throws InterruptedException
-	 */
-	public void addPlayerToGame(Player player) throws InterruptedException{
-		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
-		Cell initCell = getCell(initCoordinate);
-		initCell.setPlayer(player);
 	}
 
 	/**

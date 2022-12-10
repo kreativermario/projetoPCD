@@ -1,16 +1,11 @@
 package game;
 
-import environment.Cell;
 import environment.Direction;
-import gui.BoardJComponent;
 import gui.ClientGUI;
-import gui.GameGuiMain;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -85,14 +80,14 @@ public class RemoteClient{
         while(true){
             try {
                 //TODO receção
-                Message receivedMessage = (Message) input.readObject();
-                String debug = receivedMessage.toString();
-                for(Player p : receivedMessage.getPlayerList()){
+                GameStatus receivedGameStatus = (GameStatus) input.readObject();
+                String debug = receivedGameStatus.toString();
+                for(Player p : receivedGameStatus.getPlayerList()){
                     debug += " " + p.getCurrentCell();
                 }
                 System.out.println(debug);
 
-                List<Player> playerList = receivedMessage.getPlayerList();
+                List<Player> playerList = receivedGameStatus.getPlayerList();
                 clientGUI = new ClientGUI(playerList, LEFT, RIGHT, UP, DOWN);
                 clientGUI.init();
                 break;
@@ -110,14 +105,14 @@ public class RemoteClient{
             try {
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
-                Message receivedMessage = (Message) input.readObject();
+                GameStatus receivedGameStatus = (GameStatus) input.readObject();
                 System.out.println("UPDATING STATUS...");
-                String debug = receivedMessage.toString();
-                for(Player p : receivedMessage.getPlayerList()){
+                String debug = receivedGameStatus.toString();
+                for(Player p : receivedGameStatus.getPlayerList()){
                     debug += " " + p.getCurrentCell();
                 }
                 System.out.println(debug);
-                clientGUI.updateGameStatus(receivedMessage.getPlayerList());
+                clientGUI.updateGameStatus(receivedGameStatus.getPlayerList());
                 //TODO envio de direcao
 
                 if(clientGUI.getBoardJComponent().getLastPressedDirection() != null) {
@@ -145,12 +140,6 @@ public class RemoteClient{
         }catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) throws UnknownHostException {
-        RemoteClient client = new RemoteClient(InetAddress.getByName("localHost"), 2022,
-                65, 68, 87, 83);
-        client.runClient();
     }
 
 }
