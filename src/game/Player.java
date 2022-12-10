@@ -104,9 +104,9 @@ public abstract class Player extends Thread implements Serializable {
 			//TODO Finish game
 			this.currentStrength = 10;
 			game.notifyChange();
-			this.interrupt();
 			System.out.println("Player " + getIdentification()  + " -> Finished the game!");
 			Game.countDownLatch.countDown();
+			this.interrupt();
 			return;
 		}
 		this.currentStrength += strength;
