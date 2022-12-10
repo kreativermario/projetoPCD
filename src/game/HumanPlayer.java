@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HumanPlayer extends Player implements Serializable {
 
     private static AtomicInteger idCounter = new AtomicInteger();
-    public static int INITIAL_STRENGTH = 5;
+    public static final int INITIAL_STRENGTH = 5;
 
     public HumanPlayer(Game game) {
         super(createID(), game, (byte) INITIAL_STRENGTH);

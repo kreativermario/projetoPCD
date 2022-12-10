@@ -129,10 +129,10 @@ public class Server extends Thread{
                 output.writeObject(sendGameStatus);
                 System.out.println("Sent game status to client!");
                 output.reset();
-                //Jogo terminou, parar de enviar
-                if(game.isGameEnded()){
-                    break;
-                }
+//                //Jogo terminou, parar de enviar
+//                if(game.isGameEnded()){
+//                    break;
+//                }
                 if(input.ready()){
                     String directionReceived = input.readLine();
                     System.out.println("DIRECTION RECEIVED !!! " + directionReceived);

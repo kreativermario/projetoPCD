@@ -248,7 +248,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 	 */
 	public Player getPlayer() {
 		lock.lock();
-		Player returnPlayer = this.player;
+		Player returnPlayer = player;
 		lock.unlock();
 		return returnPlayer;
 	}
