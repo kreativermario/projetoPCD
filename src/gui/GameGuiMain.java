@@ -1,24 +1,28 @@
 package gui;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
+
+import environment.Cell;
 import game.Game;
-import game.PhoneyHumanPlayer;
+import game.RemoteClient;
+import game.Server;
 
 import javax.swing.JFrame;
 
 public class GameGuiMain implements Observer {
-	private JFrame frame = new JFrame("pcd.io");
+	private JFrame frame;
 	private BoardJComponent boardGui;
 	private Game game;
 
 	public GameGuiMain() {
 		super();
+		frame = new JFrame("pcd.io");
 		game = new Game();
 		game.addObserver(this);
-
 		buildGui();
-
 	}
 
 	private void buildGui() {
@@ -41,19 +45,11 @@ public class GameGuiMain implements Observer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		game.addPlayerToGame(new PhoneyHumanPlayer(1, game, (byte)3));
-		game.addPlayerToGame(new PhoneyHumanPlayer(2, game, (byte)2));
-		game.addPlayerToGame(new PhoneyHumanPlayer(3, game, (byte)1));
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 		boardGui.repaint();
-	}
-
-	public static void main(String[] args) {
-		GameGuiMain game = new GameGuiMain();
-		game.init();
 	}
 
 }

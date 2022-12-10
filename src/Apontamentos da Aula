@@ -1,0 +1,47 @@
+                                    <4> Fases de Desenvolvimento
+
+------------------------------------------------------------------------------------------------------------------
+
+1 - Colocação inicial de jogadores
+ - Variáveis condicionais para colocação inicial dos jogadores (estratégia tem de ser diferente da fase 4)
+ - Cell é a matriz de jogo
+ - Acesso à Cell é sincronizado
+ - Cell é o recurso partilhado
+ - Jogo começa só com bots (nº de automáticos)
+ - no "removePlayer" não deve bloquear
+
+
+
+------------------------------------------------------------------------------------------------------------------
+2 - Movimentação básica de jogadores automáticos (BOTS)
+ - Intervalo de repetição usa Game.REFRESH_INTERVAL
+ - A cada movimento é desencadeada a atualização da interface -> notifyChange()
+ - Classe Player extends Thread
+ - O movimento e o clock vão ser em cada Thread do jogador
+ - Jogadores verificam se a nova posicao tem player ou nao
+        se tiver, faz fight
+        se nao tiver, faz um "move", remove a celula atual e coloca-se na nova
+ - Movimento random não pode sair da dimensão da board
+
+------------------------------------------------------------------------------------------------------------------
+3 - Movimentação completa dos jogadores
+    - move chama o fight() da cell, ai decide-se quem ganha, coloca-se como obstaculo aquele que perde e
+    interrompe a thread do bot que perdeu
+    - move verifica se tem obstaculo antes de tudo
+    -
+
+
+------------------------------------------------------------------------------------------------------------------
+4 - Resolução de imobilização do movimento
+
+
+
+------------------------------------------------------------------------------------------------------------------
+
+Problemas possiveis
+    - Se um player (1,0) decidir lutar contra o player (2,0) mas este segundo decidir durante a fight? O que acontece?
+    Ou seja, como bloqueio a thread para que fique na fight e só depois é que pode mexer? Barreira? CountDownLatch?
+    - O movimento dos players nao pode ser usado o setPlayer()!
+    - Possiveis deadlocks, acho que e o removePlayer quando se esta a mover quando avisa aquele que quer fazer setPlayer
+    - Deadlock quando se mexem um contra o outro? Um tenta fazer lock mas nao obteve o lock da outra. Situacao do jantar
+     de filosofos!
