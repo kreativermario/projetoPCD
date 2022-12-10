@@ -110,11 +110,15 @@ public class Game extends Observable implements Serializable {
 	 * @return Cell
 	 */
 	public Cell getCellByPlayer(Player player){
-		for (int x = 0; x < Game.DIMX; x++)
-			for (int y = 0; y < Game.DIMY; y++)
-				if(board[x][y].getPlayer() != null)
-					if(board[x][y].getPlayer().equals(player))
+		for (int x = 0; x < Game.DIMX; x++) {
+			for (int y = 0; y < Game.DIMY; y++) {
+				Player ply = board[x][y].getPlayer();
+				if (ply != null) {
+					if (ply.equals(player))
 						return board[x][y];
+				}
+			}
+		}
 		return null;
 	}
 
