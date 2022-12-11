@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Server extends Thread{
 
-    private ServerSocket server;
+    private ServerSocket serverSocket;
     protected Game game;
     public static final int PORT = 2022;
 
@@ -20,7 +20,7 @@ public class Server extends Thread{
         System.out.println("Server created!");
         this.game = new Game();
         try{
-            server = new ServerSocket(PORT); // Throws IOException
+            serverSocket = new ServerSocket(PORT); // Throws IOException
         }catch (IOException e){
             System.out.println("Error connecting server... aborting!");
             System.exit(1);
@@ -35,7 +35,7 @@ public class Server extends Thread{
         System.out.println("Server created!");
         this.game = game;
         try{
-            server = new ServerSocket(PORT); // Throws IOException
+            serverSocket = new ServerSocket(PORT); // Throws IOException
         }catch (IOException e){
             System.out.println("Error connecting server... aborting!");
             System.exit(1);
@@ -47,22 +47,18 @@ public class Server extends Thread{
      */
     @Override
     public void run(){
-        while(true){
-            runServer();
-        }
-    }
-
-    /**
-     * Metodo principal do servidor que espera por conexoes
-     */
-    public void runServer() {
-        while (true){
-            try {
-                waitForConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try{
+            while (true){
+                try {
+                    waitForConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        }finally {
+            closeServer();
         }
+
     }
 
     /**
@@ -71,9 +67,18 @@ public class Server extends Thread{
      */
     public void waitForConnection() throws IOException{
         System.out.println("Waiting for connection...");
-        Socket connection = server.accept();
+        Socket connection = serverSocket.accept();
         ConnectionHandler connectionHandler = new ConnectionHandler(connection);
         connectionHandler.start();
+    }
+
+    private void closeServer(){
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Closed server!");
     }
 
 
@@ -105,10 +110,8 @@ public class Server extends Thread{
         }
 
         private void getStreams() throws IOException{
-            //TODO Autoflush, quando escrevo algo, manda logo
             output = new ObjectOutputStream(connection.getOutputStream());
             input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
         }
 
         /**
@@ -142,7 +145,6 @@ public class Server extends Thread{
         }
 
         private void closeConnection() {
-
             /*
             Varios try catches de modo a que caso de erro a fechar um ainda fecha os outros
              */
@@ -161,6 +163,7 @@ public class Server extends Thread{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println("Closed connection with client!");
         }
 
     }
