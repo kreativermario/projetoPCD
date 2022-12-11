@@ -81,9 +81,9 @@ public class RemoteClient{
             try {
                 //TODO receção
                 GameStatus receivedGameStatus = (GameStatus) input.readObject();
-                String debug = receivedGameStatus.toString();
+                StringBuilder debug = new StringBuilder(receivedGameStatus.toString());
                 for(Player p : receivedGameStatus.getPlayerList()){
-                    debug += " " + p.getCurrentCell();
+                    debug.append(" ").append(p.getCurrentCell());
                 }
                 System.out.println(debug);
 
@@ -107,9 +107,9 @@ public class RemoteClient{
                 //Game receivedGame = (Game) input.readObject();
                 GameStatus receivedGameStatus = (GameStatus) input.readObject();
                 System.out.println("UPDATING STATUS...");
-                String debug = receivedGameStatus.toString();
+                StringBuilder debug = new StringBuilder(receivedGameStatus.toString());
                 for(Player p : receivedGameStatus.getPlayerList()){
-                    debug += " " + p.getCurrentCell();
+                    debug.append(" ").append(p.getCurrentCell());
                 }
                 System.out.println(debug);
                 clientGUI.updateGameStatus(receivedGameStatus.getPlayerList());

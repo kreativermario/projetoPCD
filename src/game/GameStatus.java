@@ -8,18 +8,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameStatus implements Serializable {
-    private List<Player> playerList = new ArrayList<Player>();
+    private final List<Player> playerList;
 
     public GameStatus(Game game){
-       /* Cell[][] board = game.getBoard();
-        for (int x = 0; x < Game.DIMX; x++) {
-            for (int y = 0; y < Game.DIMY; y++) {
-                Player player = board[x][y].getPlayer();
-                if (player != null) {
-                    playerList.add(player);
-                }
-            }
-        }*/
         playerList = game.getPlayerList();
     }
 
@@ -29,11 +20,11 @@ public class GameStatus implements Serializable {
 
     @Override
     public String toString(){
-        String debug = String.valueOf(this.hashCode());
+        StringBuilder debug = new StringBuilder(String.valueOf(this.hashCode()));
         for(Player p : getPlayerList()){
-            debug += " " + p.getCurrentCell();
+            debug.append(" ").append(p.getCurrentCell());
         }
-        return debug;
+        return debug.toString();
     }
 
 }

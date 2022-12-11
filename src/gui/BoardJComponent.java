@@ -147,23 +147,23 @@ public class BoardJComponent extends JComponent implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 		if(!customKeys){
-			switch(keyCode){
-				case KeyEvent.VK_LEFT :
+			switch (keyCode) {
+				case KeyEvent.VK_LEFT -> {
 					System.out.println("PRESSED LEFT");
-					lastPressedDirection=environment.Direction.LEFT;
-					break;
-				case KeyEvent.VK_RIGHT:
+					lastPressedDirection = Direction.LEFT;
+				}
+				case KeyEvent.VK_RIGHT -> {
 					System.out.println("PRESSED RIGHT");
-					lastPressedDirection=environment.Direction.RIGHT;
-					break;
-				case KeyEvent.VK_UP:
+					lastPressedDirection = Direction.RIGHT;
+				}
+				case KeyEvent.VK_UP -> {
 					System.out.println("PRESSED UP");
-					lastPressedDirection=environment.Direction.UP;
-					break;
-				case KeyEvent.VK_DOWN:
+					lastPressedDirection = Direction.UP;
+				}
+				case KeyEvent.VK_DOWN -> {
 					System.out.println("PRESSED DOWN");
-					lastPressedDirection=environment.Direction.DOWN;
-					break;
+					lastPressedDirection = Direction.DOWN;
+				}
 			}
 		}else{
 			if(keyCode == UP){
