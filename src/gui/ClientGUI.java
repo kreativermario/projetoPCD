@@ -1,15 +1,14 @@
 package gui;
 
 import environment.Cell;
-import game.Game;
 import game.Player;
 
 import javax.swing.*;
 import java.util.List;
 
 public class ClientGUI {
-    private JFrame frame;
-    private BoardJComponent boardGui;
+    private final JFrame frame;
+    private final BoardJComponent boardGui;
 
     public ClientGUI(List<Player> playerList, int LEFT, int RIGHT, int UP, int DOWN) {
         super();

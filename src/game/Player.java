@@ -19,7 +19,7 @@ public abstract class Player extends Thread implements Serializable {
 
 
 	protected  Game game;
-	private int id;
+	private final int id;
 	private byte currentStrength;
 	protected byte originalStrength;
 
@@ -115,9 +115,6 @@ public abstract class Player extends Thread implements Serializable {
 		this.moveDirection = moveDirection;
 	}
 
-	public Direction getMoveDirection() {
-		return moveDirection;
-	}
 
 	private void move(Direction newDirection) throws InterruptedException{
 		Coordinate directionVector = newDirection.getVector();
@@ -173,10 +170,6 @@ public abstract class Player extends Thread implements Serializable {
 		if (id != other.id)
 			return false;
 		return true;
-	}
-
-	public Game getGame() {
-		return game;
 	}
 
 	public byte getCurrentStrength() {

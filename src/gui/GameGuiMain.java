@@ -1,14 +1,9 @@
 package gui;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 
-import environment.Cell;
 import game.Game;
-import game.RemoteClient;
-import game.Server;
 
 import javax.swing.JFrame;
 

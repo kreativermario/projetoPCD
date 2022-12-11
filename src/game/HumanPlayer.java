@@ -1,8 +1,5 @@
 package game;
 
-import environment.Direction;
-import gui.BoardJComponent;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 

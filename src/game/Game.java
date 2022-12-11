@@ -128,9 +128,6 @@ public class Game extends Observable implements Serializable {
 		return board[at.x][at.y];
 	}
 
-	public Cell[][] getBoard() {
-		return board;
-	}
 	/**
 	 * Updates GUI. Should be called anytime the game state changes
 	 */

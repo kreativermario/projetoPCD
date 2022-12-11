@@ -8,11 +8,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
 
-import static java.lang.Thread.sleep;
-
 
 public class RemoteClient{
-    private InetAddress address;
+    private final InetAddress address;
     private Socket socket;
     private ObjectInputStream input;
     private PrintWriter output;
@@ -20,11 +18,10 @@ public class RemoteClient{
     //TODO nao preciso de game
     private Game game;
     private ClientGUI clientGUI;
-    private Player clientPlayer;
-    private int LEFT;
-    private int RIGHT;
-    private int UP;
-    private int DOWN;
+    private final int LEFT;
+    private final int RIGHT;
+    private final int UP;
+    private final int DOWN;
 
     //Construtor para GUI Clientes
     public RemoteClient(InetAddress address, int PORT, int LEFT, int RIGHT, int UP, int DOWN) {
@@ -77,23 +74,20 @@ public class RemoteClient{
 
     public void firstConnection() throws IOException{
         System.out.println("Client processing first connection...");
-        while(true){
-            try {
-                //TODO receção
-                GameStatus receivedGameStatus = (GameStatus) input.readObject();
-                StringBuilder debug = new StringBuilder(receivedGameStatus.toString());
-                for(Player p : receivedGameStatus.getPlayerList()){
-                    debug.append(" ").append(p.getCurrentCell());
-                }
-                System.out.println(debug);
-
-                List<Player> playerList = receivedGameStatus.getPlayerList();
-                clientGUI = new ClientGUI(playerList, LEFT, RIGHT, UP, DOWN);
-                clientGUI.init();
-                break;
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+        try {
+            //TODO receção
+            GameStatus receivedGameStatus = (GameStatus) input.readObject();
+            StringBuilder debug = new StringBuilder(receivedGameStatus.toString());
+            for(Player p : receivedGameStatus.getPlayerList()){
+                debug.append(" ").append(p.getCurrentCell());
             }
+            System.out.println(debug);
+
+            List<Player> playerList = receivedGameStatus.getPlayerList();
+            clientGUI = new ClientGUI(playerList, LEFT, RIGHT, UP, DOWN);
+            clientGUI.init();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -119,7 +113,7 @@ public class RemoteClient{
                     directionPressed = clientGUI.getBoardJComponent().getLastPressedDirection();
                     clientGUI.getBoardJComponent().clearLastPressedDirection();
                     System.out.println("SENDING " + directionPressed.toString());
-                    output.println(directionPressed.toString());
+                    output.println(directionPressed);
                 }
 
             } catch (ClassNotFoundException e) {

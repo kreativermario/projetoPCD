@@ -1,11 +1,7 @@
 package game;
 
-import environment.Cell;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameStatus implements Serializable {
     private final List<Player> playerList;

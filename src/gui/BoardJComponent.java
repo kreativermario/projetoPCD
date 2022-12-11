@@ -139,9 +139,6 @@ public class BoardJComponent extends JComponent implements KeyListener {
 		this.playerList = playerList;
 	}
 
-	public void setBoard(Cell [][] board) {
-		this.board = board;
-	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {

@@ -156,7 +156,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 		// Energias iguais
 		if(thisPlayerStrength == otherPlayerStrength){
 			// Random 0 ou 1
-			System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent.toString());
+			System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent);
 			int chance = (int) Math.round( Math.random());
 			switch (chance) {
 				case 0 -> {
