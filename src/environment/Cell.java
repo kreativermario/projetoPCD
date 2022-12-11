@@ -162,12 +162,14 @@ public class Cell implements Comparable<Cell>, Serializable{
 				case 0 -> {
 					this.player.addStrength(otherPlayerStrength);
 					System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+					opponent.setDead();
 					opponent.getCurrentCell().setObstacle();
 					opponent.interrupt();
 				}
 				case 1 -> {
 					opponent.addStrength(thisPlayerStrength);
 					System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+					this.player.setDead();
 					this.setObstacle();
 					this.player.interrupt();
 				}
@@ -177,6 +179,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 		} else if (thisPlayerStrength > otherPlayerStrength) {
 			this.player.addStrength(opponent.getCurrentStrength());
 			System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+			opponent.setDead();
 			opponent.getCurrentCell().setObstacle();
 			opponent.interrupt();
 
@@ -184,6 +187,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 		} else {
 			opponent.addStrength(this.player.getCurrentStrength());
 			System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+			this.player.setDead();
 			this.setObstacle();
 			this.player.interrupt();
 		}
@@ -265,8 +269,6 @@ public class Cell implements Comparable<Cell>, Serializable{
 	 * Funcao que coloca a celula como obstaculo
 	 */
 	private void setObstacle(){
-		// Pintar o player como obstaculo morto (currentStrength = 0)
-		this.player.setObstacle();
 		this.isObstacle = true;
 	}
 

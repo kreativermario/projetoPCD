@@ -89,7 +89,7 @@ public abstract class Player extends Thread implements Serializable {
 	/**
 	 * Torna o player num obstaculo se perdeu
 	 */
-	public void setObstacle(){
+	public void setDead(){
 		this.currentStrength = 0;
 		System.err.println("Player " + this.getIdentification() + " DIED!");
 	}
@@ -104,9 +104,8 @@ public abstract class Player extends Thread implements Serializable {
 			//TODO Finish game
 			this.currentStrength = 10;
 			game.notifyChange();
-			System.out.println("Player " + getIdentification()  + " -> Finished the game!");
-			Game.countDownLatch.countDown();
 			this.interrupt();
+			Game.countDownLatch.countDown();
 			return;
 		}
 		this.currentStrength += strength;
