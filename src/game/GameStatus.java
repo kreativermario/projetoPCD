@@ -11,7 +11,7 @@ public class GameStatus implements Serializable {
     private List<Player> playerList = new ArrayList<Player>();
 
     public GameStatus(Game game){
-        Cell[][] board = game.getBoard();
+       /* Cell[][] board = game.getBoard();
         for (int x = 0; x < Game.DIMX; x++) {
             for (int y = 0; y < Game.DIMY; y++) {
                 Player player = board[x][y].getPlayer();
@@ -19,7 +19,8 @@ public class GameStatus implements Serializable {
                     playerList.add(player);
                 }
             }
-        }
+        }*/
+        playerList = game.getPlayerList();
     }
 
     public List<Player> getPlayerList() {

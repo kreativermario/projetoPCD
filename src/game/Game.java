@@ -6,10 +6,7 @@ import environment.Cell;
 import environment.Coordinate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Classe principal que processa o jogo
@@ -28,6 +25,7 @@ public class Game extends Observable implements Serializable {
 	public static FinishCountDownLatch countDownLatch = new FinishCountDownLatch(NUM_FINISHED_PLAYERS_TO_END_GAME);
 
 	private boolean gameEnded = false;
+	private List<Player> playerList = Collections.synchronizedList(new ArrayList<Player>());
 	protected Cell[][] board;
 
 	/**
@@ -52,7 +50,7 @@ public class Game extends Observable implements Serializable {
 					e.printStackTrace();
 				}
 				//TODO matar threads e terminar jogo
-				for (int x = 0; x < Game.DIMX; x++) {
+				/*for (int x = 0; x < Game.DIMX; x++) {
 					for (int y = 0; y < Game.DIMY; y++) {
 						Cell cell = board[x][y];
 						//TODO ter atencao sincronizacao etc! Dar lock!
@@ -60,6 +58,9 @@ public class Game extends Observable implements Serializable {
 							cell.getPlayer().interrupt();
 						}
 					}
+				}*/
+				for(Player p : playerList){
+					p.interrupt();
 				}
 				gameEnded = true;
 				//TODO O que fazer quando acabar
@@ -97,8 +98,13 @@ public class Game extends Observable implements Serializable {
 		Coordinate initCoordinate = Coordinate.getRandomCoordinate();
 		Cell initCell = getCell(initCoordinate);
 		initCell.setPlayer(player);
+		// Adicionar a lista apos ter posicao
+		playerList.add(player);
 	}
 
+	public List<Player> getPlayerList() {
+		return playerList;
+	}
 
 	public boolean isGameEnded() {
 		return gameEnded;
