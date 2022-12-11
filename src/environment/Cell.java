@@ -120,7 +120,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 			}
 
 			if(!to.isObstacle() && to.getPlayer().getCurrentStrength()!= 10){
-				System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
+				//System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
 				to.fight(fromPlayer);
 			}
 		// Não tem player, então é só mover!
@@ -157,19 +157,19 @@ public class Cell implements Comparable<Cell>, Serializable{
 		// Energias iguais
 		if(thisPlayerStrength == otherPlayerStrength){
 			// Random 0 ou 1
-			System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent);
+			//System.err.println(this.player.toString() + " HAS THE SAME STRENGTH OF " + opponent);
 			int chance = (int) Math.round( Math.random());
 			switch (chance) {
 				case 0 -> {
 					this.player.addStrength(otherPlayerStrength);
-					System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+					//System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 					opponent.setDead();
 					opponent.getCurrentCell().setObstacle();
 					opponent.interrupt();
 				}
 				case 1 -> {
 					opponent.addStrength(thisPlayerStrength);
-					System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+					//System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 					this.player.setDead();
 					this.setObstacle();
 					this.player.interrupt();
@@ -179,7 +179,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 		// O player nesta celula ganha ao outro que entra nesta celula
 		} else if (thisPlayerStrength > otherPlayerStrength) {
 			this.player.addStrength(opponent.getCurrentStrength());
-			System.err.println(this.player + " PLAYER WON!"); //TODO Debug
+			//System.err.println(this.player + " PLAYER WON!"); //TODO Debug
 			opponent.setDead();
 			opponent.getCurrentCell().setObstacle();
 			opponent.interrupt();
@@ -187,7 +187,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 			// O outro player ganha ao player que esta nesta celula
 		} else {
 			opponent.addStrength(this.player.getCurrentStrength());
-			System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
+			//System.err.println(opponent + " OPPONENT WON!"); //TODO Debug
 			this.player.setDead();
 			this.setObstacle();
 			this.player.interrupt();

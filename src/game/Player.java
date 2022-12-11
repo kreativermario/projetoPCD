@@ -81,8 +81,8 @@ public abstract class Player extends Thread implements Serializable {
 				Thread.sleep(Game.REFRESH_INTERVAL*originalStrength);
 			}
 		} catch (InterruptedException e) {
-			System.err.println("Thread: " + super.threadId() + ";  Player " + getIdentification() + " INTERRUPTED!");
-			System.err.println("Player " + getIdentification()  + " -> Finished the game!");
+			//System.err.println("Thread: " + super.threadId() + ";  Player " + getIdentification() + " INTERRUPTED!");
+			//System.err.println("Player " + getIdentification()  + " -> Finished the game!");
 		}
 	}
 
@@ -91,7 +91,7 @@ public abstract class Player extends Thread implements Serializable {
 	 */
 	public void setDead(){
 		this.currentStrength = 0;
-		System.err.println("Player " + this.getIdentification() + " DIED!");
+		//System.err.println("Player " + this.getIdentification() + " DIED!");
 	}
 
 

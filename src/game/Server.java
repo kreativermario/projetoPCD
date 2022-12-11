@@ -126,11 +126,11 @@ public class Server extends Thread{
             System.out.println("Successful connection, starting proccessing...");
             while(true){
                 sleep(Game.REFRESH_INTERVAL);
-                System.out.println("Sending game status to client...");
+                //System.out.println("Sending game status to client...");
                 GameStatus sendGameStatus = new GameStatus(game);
-                System.out.println(sendGameStatus);
+                //System.out.println(sendGameStatus);
                 output.writeObject(sendGameStatus);
-                System.out.println("Sent game status to client!");
+                //System.out.println("Sent game status to client!");
                 output.reset();
                 //Jogo terminou, parar de enviar
                 if(game.isGameEnded()){
