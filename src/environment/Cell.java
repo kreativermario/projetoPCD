@@ -118,7 +118,7 @@ public class Cell implements Comparable<Cell>, Serializable{
 				}
 			}
 
-			if(!to.isObstacle()){
+			if(!to.isObstacle() && to.getPlayer().getCurrentStrength()!= 10){
 				System.err.println("Encounter" + fightId + " || " + this.player + " is going to fight " + to.getPlayer()); //TODO Debug
 				to.fight(fromPlayer);
 			}
