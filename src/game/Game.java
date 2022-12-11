@@ -49,16 +49,7 @@ public class Game extends Observable implements Serializable {
 				}catch(InterruptedException e){
 					e.printStackTrace();
 				}
-				//TODO matar threads e terminar jogo
-				/*for (int x = 0; x < Game.DIMX; x++) {
-					for (int y = 0; y < Game.DIMY; y++) {
-						Cell cell = board[x][y];
-						//TODO ter atencao sincronizacao etc! Dar lock!
-						if(cell.isOcupied() && !cell.isObstacle()){
-							cell.getPlayer().interrupt();
-						}
-					}
-				}*/
+				// Matar as threads dos jogadores
 				for(Player p : playerList){
 					p.interrupt();
 				}

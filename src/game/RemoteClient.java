@@ -122,8 +122,6 @@ public class RemoteClient{
                     output.println(directionPressed.toString());
                 }
 
-//                Cell[][] receivedBoard = receivedGame.getBoard();
-//                game.updateBoard(receivedBoard);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

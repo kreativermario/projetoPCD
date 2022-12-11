@@ -6,7 +6,7 @@ import game.Game;
  */
 public class AutonomousThread extends Thread{
 
-    private Thread player;
+    private final Thread player;
 
     /**
      * Método construtor

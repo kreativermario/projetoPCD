@@ -31,10 +31,10 @@ public class BoardJComponent extends JComponent implements KeyListener {
 	private Game game;
 	private List<Player> playerList;
 	private Cell[][] board;
-	private Image obstacleImage = new ImageIcon("obstacle.png").getImage();
-	private Image humanPlayerImage= new ImageIcon("abstract-user-flat.png").getImage();
+	private final Image obstacleImage = new ImageIcon("obstacle.png").getImage();
+	private final Image humanPlayerImage= new ImageIcon("abstract-user-flat.png").getImage();
 	private Direction lastPressedDirection=null;
-	private boolean customKeys;
+	private final boolean customKeys;
 	private int LEFT;
 	private int RIGHT;
 	private int UP;

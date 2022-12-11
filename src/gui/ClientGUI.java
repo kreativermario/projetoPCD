@@ -10,11 +10,9 @@ import java.util.List;
 public class ClientGUI {
     private JFrame frame;
     private BoardJComponent boardGui;
-    private List<Player> playerList;
 
     public ClientGUI(List<Player> playerList, int LEFT, int RIGHT, int UP, int DOWN) {
         super();
-        this.playerList = playerList;
         frame = new JFrame("Cliente");
         boardGui = new BoardJComponent(playerList, LEFT, RIGHT, UP, DOWN);
         buildGui();
@@ -38,11 +36,6 @@ public class ClientGUI {
         boardGui.setPlayerList(playerList);
         boardGui.repaint();
     }
-
-//    public void updateGameStatus(Cell[][] gameBoard){
-//        boardGui.setBoard(gameBoard);
-//        boardGui.repaint();
-//    }
 
 
     public BoardJComponent getBoardJComponent() {
