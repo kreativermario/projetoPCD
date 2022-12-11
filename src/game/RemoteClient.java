@@ -81,7 +81,7 @@ public class RemoteClient{
             for(Player p : receivedGameStatus.getPlayerList()){
                 debug.append(" ").append(p.getCurrentCell());
             }
-            System.out.println(debug);
+            //System.out.println(debug);
 
             List<Player> playerList = receivedGameStatus.getPlayerList();
             clientGUI = new ClientGUI(playerList, LEFT, RIGHT, UP, DOWN);
@@ -100,19 +100,19 @@ public class RemoteClient{
                 //TODO receção
                 //Game receivedGame = (Game) input.readObject();
                 GameStatus receivedGameStatus = (GameStatus) input.readObject();
-                System.out.println("UPDATING STATUS...");
+                //System.out.println("UPDATING STATUS...");
                 StringBuilder debug = new StringBuilder(receivedGameStatus.toString());
                 for(Player p : receivedGameStatus.getPlayerList()){
                     debug.append(" ").append(p.getCurrentCell());
                 }
-                System.out.println(debug);
+                //System.out.println(debug);
                 clientGUI.updateGameStatus(receivedGameStatus.getPlayerList());
                 //TODO envio de direcao
 
                 if(clientGUI.getBoardJComponent().getLastPressedDirection() != null) {
                     directionPressed = clientGUI.getBoardJComponent().getLastPressedDirection();
                     clientGUI.getBoardJComponent().clearLastPressedDirection();
-                    System.out.println("SENDING " + directionPressed.toString());
+                    //System.out.println("SENDING " + directionPressed.toString());
                     output.println(directionPressed);
                 }
 

@@ -13,7 +13,7 @@ public class AutonomousThread extends Thread{
      * @param player Thread
      */
     public AutonomousThread(Thread player){
-        System.err.println(threadId() + " || CREATED AUTONOMOUS THREAD FOR ");
+        //System.err.println(threadId() + " || CREATED AUTONOMOUS THREAD FOR ");
         this.player = player;
     }
 
@@ -21,7 +21,7 @@ public class AutonomousThread extends Thread{
     public void run() {
         try {
             // Aguardar 2 segundos
-            System.err.println(threadId() + " || WAITING 2 SECS FOR " );
+            //System.err.println(threadId() + " || WAITING 2 SECS FOR " );
             sleep(Game.MAX_WAITING_TIME_FOR_MOVE);
             // Notificar a thread player
             player.interrupt();
