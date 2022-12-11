@@ -94,7 +94,8 @@ public class Cell implements Comparable<Cell>, Serializable{
 
 		if(to.isOcupied()){
 			//TODO thread player automatico fica à espera que alguem o desbloqueie!
-			while(to.isObstacle && !fromPlayer.isHumanPlayer()){
+			Player toPlayer = to.getPlayer();
+			while(to.isObstacle && !fromPlayer.isHumanPlayer() || toPlayer.getCurrentStrength() == 10){
 				synchronized (this){
 					try {
 						new AutonomousThread(Thread.currentThread()).start();
