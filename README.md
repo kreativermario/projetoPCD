@@ -7,3 +7,7 @@ The game Agar.pcd is played online, between several players connected remotely.
 Each player controls an element of the game, represented by an instance of the Player class. Each player's goal is to clash/fight with the other players. 
 As a consequence of each clash/fight, one player dies, their energy being absorbed by the winner. 
 There are also bots, who will roam the board randomly, being able to clash with any other player present on the board.
+
+## Group Members
+- Mário Cao - [GitHub](https://github.com/kreativermario)
+- Rui Duarte - [GitHub](https://github.com/Ruisth)
